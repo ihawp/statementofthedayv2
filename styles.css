@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+body {
+    margin: 0;
+    font-size: 1em;
+    font-family: 'League Spartan', sans-serif;
+    overflow-x: hidden;
+}
+
+section {
+    height: 90vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100px;
+    background-color: red;
+    box-shadow: rgb(0,0,0,0.2) 0px 7px 15px;
+}
+nav {
+    width: max-content;
+    background-color: white;
+}
+footer {
+    height: 200px;
+}
+.red {
+    background-color: red;
+}
+.blue {
+    background-color: blue;
+}
+
+form {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    width: max-content;
+    height: max-content;
+}
+.form-section {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#form-button-1 {
+    padding: 7.25px;
+    width: 267.5px;
+    font-size: 1em;
+}
+input {
+    width: 250px;
+    padding: 7.25px;
+    font-size: 1em;
+}
+
+.border-background {
+    background-color: #ffffef;
+    padding: 50px;
+
+    border: 2px black solid;
+
+    box-shadow: black 2px 2px 1px;
+}
+.flex-center-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#backButton {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+
+    padding: 17.5px 15px;
+    border-radius: 150px;
+    background-color: white;
+}
