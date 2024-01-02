@@ -2,43 +2,16 @@
 
 class dink {
     constructor() {
-        this.currentPage = 'home';
+        this.logged = undefined;
+        this.currentPage = undefined;
         //var for all account info
-    }
-
-
-    // ajax request logic should go here, determine user info and then use it in the app
-    ajaxRequestGET() {
-
-    }
-
-    // check if they are logged in
-    // if they are logged in get their user_info
-    // if not let them continue
-    // this process would take over upon registration/login
-
-    getUsername() {
-        return 'ihawp';
-    }
-
-    pageInfo = {
-        'home': {
-            'function': 'home()',
-            'content': ``
-        },
-        'profile': {
-            'function': 'profile()',
-            'content': ``
-        },
-    }
-    loadPage(page) {
-        document.body.innerHTML = `
+        this.username = undefined;
+        this.userID = undefined;
+        this.pageInfo = {
+            'home': {
+                'content': `
             <h1>login</h1>
-            <form method="POST" action="php/login.php" id="loginForm">
-                <input type="text" placeholder="username" name="username" id="username" required>
-                <input type="text" placeholder="password" name="password" id="password" required>
-                <button type="submit" onclick="formSubmit(event, 'login')">login</button>
-            </form>
+
             <br>
             <h1>register</h1>
             <form method="POST" action="php/register.php" id="registerForm">
@@ -46,32 +19,81 @@ class dink {
                 <input type="text" placeholder="password" name="password" id="password" required>
                 <button type="submit" onclick="formSubmit(event, 'register')">register</button>
             </form>
-        `;
+        `
+            },
+            'profile': {
+                'content': `
+                
+                `
+            },
+        }
     }
-}
 
-function loadPage(page) {
-    doit.loadPage(page);
+    loadPage(page) {
+        // check if they are logged in
+        let rUsern = '';
+        let rUserid = 0;
+        ajaxGET('php/checkLogged.php', function(error, response) {
+            if (error) {
+                console.error('Error:', error);
+            } else {
+
+                // THIS IS NOT ALLOWED
+                // FOR SOME REASON!!!
+                rUsern = response.namee;
+                rUserid = response.idd;
+
+            }
+        });
+
+        // THIS CAUSES THE USERNAME/ID
+        // TO NOT BE SET BEFORE BEING
+        // ADDED TO DOM
+        this.username = rUsern;
+        this.userID = rUserid;
+        document.body.innerHTML = `${rUsern}, ${rUserid}` +
+            this.pageInfo[page]['content'];
+    }
+
+    formSubmit(event, type) {
+        event.preventDefault();
+
+        if (type === 'register') {
+            setTimeout(function() {
+                registerFormSubmission.submit();
+            }, 2000);
+        } else {
+            setTimeout(function() {
+                loginFormSubmission.submit();
+            }, 2000);
+        }
+    }
+
 }
 
 // start app
 const doit = new dink();
-loadPage('home');
+
+let getCurrentPage = 'home';
+doit.loadPage(getCurrentPage);
 
 const registerFormSubmission = document.getElementById('registerForm');
 const loginFormSubmission = document.getElementById('loginForm');
-function formSubmit(event, type) {
-    event.preventDefault();
 
-    if (type === 'register') {
-        setTimeout(function() {
-            registerFormSubmission.submit();
-        }, 2000);
-    } else {
-        setTimeout(function() {
-            loginFormSubmission.submit();
-        }, 2000);
-    }
+function ajaxGET(url, callback) {
+    document.addEventListener('DOMContentLoaded', function() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    callback(null, response);
+                } else {
+                    callback(xhr.statusText, null);
+                }
+            }
+        };
+        xhr.send();
+    });
 }
-
-
