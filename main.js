@@ -58,6 +58,7 @@ function home() {
         <br>
         <section class="blue">
             <h1>this is a section</h1>
+            <h1>wow</h1>
             <p>i love you gracie</p>
         </section>
         <section>
