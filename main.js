@@ -48,7 +48,6 @@ class dink {
             </form>
         `;
     }
-
 }
 
 function loadPage(page) {
