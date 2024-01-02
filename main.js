@@ -48,7 +48,6 @@ class dink {
             </form>
         `;
     }
-    githubbubhuhusfhsd
 }
 
 function loadPage(page) {
