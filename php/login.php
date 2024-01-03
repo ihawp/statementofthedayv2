@@ -16,6 +16,9 @@ if (isset($_POST['loginusername']) && isset($_POST['loginpassword'])) {
     if ($stmt->execute()) {
         $stmt->bind_result($passwordResult, $idResult, $usernameResult);
 
+        // need to add timestamp to db for login time.
+        // add it here
+
         if ($stmt->fetch()) {
             if (password_verify($password, $passwordResult)) {
                 $_SESSION['username'] = $usernameResult;
