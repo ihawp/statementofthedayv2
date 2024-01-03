@@ -7,11 +7,17 @@ let userIDD = undefined;
 const d = new Date();
 let year = d.getFullYear();
 
+
+// offset global values for loading posts
+let postsOffset = 0;
+const postsLimit = 25;
+
+
 let pageInfo = {
 }
 
 function app() {
-    getUserInfo('php/checkLogged.php')
+    useAJAXGetData('php/checkLogged.php')
         .then(userInfo => {
 
             // logged logic
@@ -116,6 +122,12 @@ function app() {
                                     <button type="submit" onclick="formSubmit(event, 'makeAPost')">post it</button>
                                 </form>
                             </section>
+                            <section id="printPostsSection">
+                                
+                            </section>
+                            <div id="loadMoreButtonDiv">
+                            <button onclick="loadPostsForHome()">load more!</button>                            
+</div>
         `
                     },
                     'settings': {
@@ -157,18 +169,15 @@ function formSubmit(event, type) {
                 }, 2000);
                 break;
             case ('makeAPost'):
-
-
                 makeAPostForm.submit();
                 break;
         }
 }
-function formSubmit2(event) {
-    event.preventDefault();
-}
-function getUserInfo(url) {
+
+/// ajax stuff
+function useAJAXGetData(url, data) {
     return new Promise((resolve, reject) => {
-        ajaxGET(url)
+        ajaxGETData(url, data)
             .then(response => {
                 resolve(response);
             })
@@ -177,11 +186,14 @@ function getUserInfo(url) {
             });
     });
 }
-function ajaxGET(url) {
+function ajaxGETData(url, data) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
+        if (data) {
+            url += '?' + Object.keys(data).map(key => key + '=' + encodeURIComponent(data[key])).join('&');
+        }
         xhr.open('GET', url, true);
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
                     const response = JSON.parse(xhr.responseText);
@@ -202,6 +214,12 @@ function printPage(page) {
             pageInfo['header']['content']+
             pageInfo[page]['content']+
             pageInfo['footer']['content'];
+        if (page === 'home') {
+            loadPostsForHome();
+        }
+        if (page !== 'home') {
+            postsOffset = 0;
+        }
     } else {
         printPage('404');
     }
@@ -223,6 +241,52 @@ function getPage() {
 }
 
 
+function addALike(postID) {
+    let wow = {
+        'post_id': postID
+    }
+    useAJAXGetData('php/addLike.php', wow)
+        .then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+function loadPostsForHome() {
+    let wow = {
+        'offset': postsOffset,
+        'limit': postsLimit
+    }
+    useAJAXGetData('php/loadPosts.php', wow)
+        .then(posts => {
+            printPostContent(posts, 'printPostsSection');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+function printPostContent(posts, idOfPrint) {
+    if (posts.length === 0) {
+            document.getElementById('loadMoreButtonDiv').innerHTML = `
+                  <p>There are no more posts!</p>
+            `;
+    }
+
+
+    for (let i = 0; i<posts.length; i++) {
+        let p = posts[i];
+        document.getElementById(idOfPrint).innerHTML += `
+                    ${p['post_id']} ${p['user_id']} ${p['username']} ${p['content']}
+                    <button onclick="addALike(${p['post_id']})">like me</button>
+                    <br>
+                <br>
+            `;
+    }
+
+    // add to posts offset (this value would need to be changed at some point maybe probably!!:))
+    postsOffset+=25;
+}
 
 // start app
 app();
