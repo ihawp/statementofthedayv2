@@ -12,11 +12,8 @@ if (isset($_SESSION['username']) && isset($_SESSION['user_id'])) {
         exit();
     }
 
-    // upload to db and return user to home page
-    // b
-
-    $stmt = $conn->prepare('INSERT INTO posts (content, time_posted) VALUES (?, NOW(6))');
-    $stmt->bind_param('s', $post);
+    $stmt = $conn->prepare('INSERT INTO posts (content, time_posted, username) VALUES (?, NOW(6), ?)');
+    $stmt->bind_param('ss', $post, $_SESSION['username']);
     if ($stmt->execute()) {
         header('Location: ../index.html?page=home&post=success');
         exit();
