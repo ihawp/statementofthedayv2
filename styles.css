@@ -5,3 +5,8 @@ body {
     font-size: 1em;
     font-family: 'League Spartan', sans-serif;
 }
+
+header {
+    background-color: yellow;
+    width: 100vw;
+}
