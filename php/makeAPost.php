@@ -13,6 +13,7 @@ if (isset($_SESSION['username']) && isset($_SESSION['user_id'])) {
     }
 
     // upload to db and return user to home page
+    // b
 
     $stmt = $conn->prepare('INSERT INTO posts (content, time_posted) VALUES (?, NOW(6))');
     $stmt->bind_param('s', $post);
