@@ -36,7 +36,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         $_SESSION['username'] = $username;
         $_SESSION['user_id'] = getUserID($conn);
         $stmtInsertUser->close();
-        header('Location: ../index.html?page=register');
+        header('Location: ../index.html?page=home');
         exit();
     } else {
         $stmtInsertUser->close();
