@@ -1,4 +1,5 @@
 <?php
+// ihawp
 
 $dbName = 'breaksite';
 $dbHost = 'localhost';
