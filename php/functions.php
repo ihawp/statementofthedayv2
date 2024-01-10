@@ -3,6 +3,13 @@
 include 'db_conn.php';
 session_start();
 
+
+// add noGoPage(); function for securtity stuffjfh skj
+// have it return true or false
+function noGoPage() {
+    return true;
+}
+
 function stmtGET($conn, $STATEMENT, $PARAM, $VARIABLE) {
     $stmt = $conn->prepare($STATEMENT);
     $stmt->bind_param($PARAM, $VARIABLE);

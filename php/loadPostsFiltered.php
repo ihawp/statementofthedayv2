@@ -1,6 +1,12 @@
 <?php
 
-// ihawp
+
+// will need a settings tables in db
+// will need to make the settings page first (to make this more exciting)
+// to upload the settings for filtering, etc
+
+// filters will relate to keywords and blocked users
+
 
 include 'db_conn.php';
 session_start();
@@ -21,14 +27,14 @@ if ($stmt->execute()) {
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
         $data[] = [
-            'post_id'=>$row['post_id'],
-            'user_id'=>$row['user_id'],
-            'content'=>$row['content'],
-            'username'=>$row['username'],
-            'likes'=>$row['likes'],
-            'comments'=>$row['comments'],
-            'pfp'=>$row['pfp'],
-            'super_parent_post_id'=>$row['super_parent_post_id']
+            'post_id' => $row['post_id'],
+            'user_id' => $row['user_id'],
+            'content' => $row['content'],
+            'username' => $row['username'],
+            'likes' => $row['likes'],
+            'comments' => $row['comments'],
+            'pfp' => $row['pfp'],
+            'super_parent_post_id' => $row['super_parent_post_id']
         ];
     }
     echo json_encode($data);

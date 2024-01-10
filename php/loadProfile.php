@@ -3,14 +3,9 @@
 include 'db_conn.php';
 
 // Function to load user information and posts for a profile
-function loadProfileData($profileID, $offset) {
-    global $conn;
-
-    // Define your SQL query to retrieve user information
-    $sqlUserInfo = 'SELECT id, username FROM accounts WHERE id = ?;';
-
+function loadProfileData($conn, $profileID, $offset) {
     // Prepare and execute the query for user information
-    $stmtUserInfo = $conn->prepare($sqlUserInfo);
+    $stmtUserInfo = $conn->prepare('SELECT id, username, following_count, follow_count, pfp FROM accounts WHERE id = ?');
     $stmtUserInfo->bind_param('i', $profileID);
 
     if (!$stmtUserInfo->execute()) {
@@ -33,7 +28,11 @@ function loadProfileData($profileID, $offset) {
     }
 
     // Define your SQL query to retrieve the latest posts for the profile
-    $sqlPosts = 'SELECT post_id, content, username, user_id, likes, CONVERT_TZ(time_posted, "UTC", "-06:00") as saskatoon_timestamp FROM posts WHERE user_id = ? ORDER BY time_posted DESC LIMIT 25 OFFSET ?;';
+    $sqlPosts = 'SELECT post_id, content, username, user_id, likes, comments, CONVERT_TZ(time_posted, "UTC", "-06:00") as saskatoon_timestamp
+                 FROM posts
+                 WHERE user_id = ?
+                 ORDER BY time_posted DESC
+                 LIMIT 25 OFFSET ?;';
 
     // Prepare and execute the query for posts
     $stmtPosts = $conn->prepare($sqlPosts);
@@ -54,7 +53,10 @@ function loadProfileData($profileID, $offset) {
             'post_id'=>$row['post_id'],
             'user_id'=>$row['user_id'],
             'content'=>$row['content'],
-            'username'=>$row['username']
+            'username'=>$row['username'],
+            'likes'=>$row['likes'],
+            'comments'=>$row['comments'],
+            'pfp'=>$userInfo['pfp']  // Include pfp from accounts table
         ];
     }
 
@@ -71,7 +73,7 @@ if (isset($_GET['profile_id']) && isset($_GET['offset'])) {
     $offset = $_GET['offset'];
 
     // Call the function to load profile data
-    $profileData = loadProfileData($profileID, $offset);
+    $profileData = loadProfileData($conn, $profileID, $offset);
 
     // Send the profile data as JSON
     echo json_encode($profileData);
@@ -83,6 +85,3 @@ if (isset($_GET['profile_id']) && isset($_GET['offset'])) {
 // Close the database connection
 $conn->close();
 exit();
-
-
-

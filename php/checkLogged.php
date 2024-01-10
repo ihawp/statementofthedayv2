@@ -9,7 +9,8 @@ if (!isset($_SESSION['user_id'])) {
 } else {
     echo json_encode([
         'namee'=>$_SESSION['username'],
-        'idd'=>$_SESSION['user_id']
+        'idd'=>$_SESSION['user_id'],
+        'pfpp'=>$_SESSION['pfp']
     ]);
     exit();
 }

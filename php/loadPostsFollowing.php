@@ -1,6 +1,16 @@
 <?php
 
-// ihawp
+// check their following list
+// by making a query to follows
+// store ids in an array
+// loop through array to find 25 MOST RECENT posts
+// ^ take one from everyone possible
+// before looping through the list again?
+
+
+// will need to send a value back
+// to be stored in offset var for load more purposes
+
 
 include 'db_conn.php';
 session_start();
@@ -21,14 +31,14 @@ if ($stmt->execute()) {
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
         $data[] = [
-            'post_id'=>$row['post_id'],
-            'user_id'=>$row['user_id'],
-            'content'=>$row['content'],
-            'username'=>$row['username'],
-            'likes'=>$row['likes'],
-            'comments'=>$row['comments'],
-            'pfp'=>$row['pfp'],
-            'super_parent_post_id'=>$row['super_parent_post_id']
+            'post_id' => $row['post_id'],
+            'user_id' => $row['user_id'],
+            'content' => $row['content'],
+            'username' => $row['username'],
+            'likes' => $row['likes'],
+            'comments' => $row['comments'],
+            'pfp' => $row['pfp'],
+            'super_parent_post_id' => $row['super_parent_post_id']
         ];
     }
     echo json_encode($data);

@@ -4,27 +4,34 @@
 include 'db_conn.php';
 include 'functions.php';
 
-session_start();
-
 if (isset($_POST['loginusername']) && isset($_POST['loginpassword'])) {
     $username = htmlspecialchars($_POST['loginusername']);
     $password = htmlspecialchars($_POST['loginpassword']);
 
-    $stmt = $conn->prepare('SELECT password, id, username FROM accounts WHERE username = ?');
+    $stmt = $conn->prepare('SELECT password, id, username, pfp FROM accounts WHERE username = ?');
     $stmt->bind_param('s', $username);
 
     if ($stmt->execute()) {
-        $stmt->bind_result($passwordResult, $idResult, $usernameResult);
-
-        // need to add timestamp to db for login time.
-        // add it here
+        $stmt->bind_result($passwordResult, $idResult, $usernameResult,$pfp);
 
         if ($stmt->fetch()) {
             if (password_verify($password, $passwordResult)) {
                 $_SESSION['username'] = $usernameResult;
                 $_SESSION['user_id'] = $idResult;
-                header('Location: ../index.html?page=home');
-                exit();
+                $_SESSION['pfp']=$pfp;
+
+
+                $stmt->close();
+                $stmt = $conn->prepare('UPDATE accounts SET last_login = NOW(6) WHERE id = ?');
+                $stmt->bind_param('i', $_SESSION['user_id']);
+
+                if ($stmt->execute()) {
+                    header('Location: ../index.html?page=home');
+                    exit();
+                } else {
+                    header('Location: ../index.html?error=updateerror&page=login');
+                    exit();
+                }
             } else {
                 header('Location: ../index.html?error=wrongpassword&page=login');
                 exit();
@@ -37,5 +44,4 @@ if (isset($_POST['loginusername']) && isset($_POST['loginpassword'])) {
         header('Location: ../index.html?error=queryerror&page=login');
         exit();
     }
-    $stmt->close();
 }
