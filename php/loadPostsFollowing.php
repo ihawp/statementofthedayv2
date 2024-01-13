@@ -1,45 +1,63 @@
 <?php
 
-// check their following list
-// by making a query to follows
-// store ids in an array
-// loop through array to find 25 MOST RECENT posts
-// ^ take one from everyone possible
-// before looping through the list again?
-
-
-// will need to send a value back
-// to be stored in offset var for load more purposes
-
-
 include 'db_conn.php';
 session_start();
 
-$offset = htmlspecialchars($_GET['offset']);
-$limit = htmlspecialchars($_GET['limit']);
+$user = intval($_SESSION['user_id']);
+$wow = array();
 
-$data = array();
-
-$stmt = $conn->prepare("SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp 
-                       FROM posts p
-                       LEFT JOIN accounts a ON p.user_id = a.id
-                       WHERE p.parent_post_id = 0 
-                       ORDER BY p.time_posted DESC 
-                       LIMIT ? OFFSET ?");
-$stmt->bind_param('ii', $limit, $offset);
+// Get followers list
+$stmt = $conn->prepare('SELECT followed_id FROM follows WHERE following_id = ?');
+$stmt->bind_param('i', $user);
 if ($stmt->execute()) {
     $result = $stmt->get_result();
     while ($row = $result->fetch_assoc()) {
-        $data[] = [
-            'post_id' => $row['post_id'],
-            'user_id' => $row['user_id'],
-            'content' => $row['content'],
-            'username' => $row['username'],
-            'likes' => $row['likes'],
-            'comments' => $row['comments'],
-            'pfp' => $row['pfp'],
-            'super_parent_post_id' => $row['super_parent_post_id']
-        ];
+        $wow[] = $row['followed_id'];
     }
-    echo json_encode($data);
+    $stmt->close();
+
+    // get list of posts from lists following list
+    $offset = intval($_GET['offset']);
+    $limit = intval($_GET['limit']);
+    $data = array();
+    $sql = "SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp 
+        FROM posts p
+        LEFT JOIN accounts a ON p.user_id = a.id
+        WHERE p.parent_post_id = 0 
+          AND p.user_id IN (" . implode(',', array_fill(0, count($wow), '?')) . ")
+        ORDER BY p.time_posted DESC 
+        LIMIT ? OFFSET ?";
+
+    $stmt = $conn->prepare($sql);
+
+    $paramTypes = str_repeat('i', count($wow)) . 'ii';
+    $bindParams = [$paramTypes];
+
+    foreach ($wow as &$value) {
+        $bindParams[] = &$value;
+    }
+    $bindParams[] = &$limit;
+    $bindParams[] = &$offset;
+
+    // Call bind_param dynamically
+    call_user_func_array([$stmt, 'bind_param'], $bindParams);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $data[] = [
+                    'post_id' => $row['post_id'],
+                    'user_id' => $row['user_id'],
+                    'content' => $row['content'],
+                    'username' => $row['username'],
+                    'likes' => $row['likes'],
+                    'comments' => $row['comments'],
+                    'pfp' => $row['pfp'],
+                    'super_parent_post_id' => $row['super_parent_post_id']
+                ];
+            }
+            echo json_encode($data);
+        } else {
+            echo "Error executing statement";
+        }
+        $stmt->close();
 }
