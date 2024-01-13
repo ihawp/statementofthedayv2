@@ -16,6 +16,7 @@ let profileOffset = 0;
 let postOffset = 0;
 const postsLimit = 25;
 
+let userFilters = new Array();
 let profileCount = 0;
 
 // create array for
@@ -94,6 +95,7 @@ function app() {
                     }
                 }
             } else if (logged === true) {
+                loadFiltersForSettings();
                 pageInfo = {
                     // make function for nav clicking
                     // so that the nav can be coloured when you
@@ -162,9 +164,29 @@ function app() {
 
 <h1>add pfp</h1>
 <form id="addPFPForm" action="php/changePFP.php" method="POST">
+    <img src="${pfpp}" width="50px" height="50px">
     <input type="file" name="file" id="file" accept=".pdf, .doc, .docx, .txt">
     <button type="submit" onclick="formSubmit(event, 'changePFP')">change pfp</button>
 </form>
+<h1>username</h1>
+<form id="usernameForm">
+    <input placeholder="${usernamee}" disabled>
+</form>
+<h1>change password</h1>
+<form id="passwordForm">
+    <input placeholder="*******">
+</form>
+<h1>add filters</h1>
+<div id="filtersFormCollectedErrorBox">
+
+</div>
+<form id="filtersForm">
+    <input type="text" id="addFilterValue">
+    <button type="submit" onclick="addFilters(event)">add filter</button>
+</form>
+<div id="filtersFormCollected">
+
+</div>
 </section>
                           
                 `
@@ -253,15 +275,19 @@ function app() {
             }
 
             // page logic
-            let page = getPage();
-            if (page==='post'){
-                openViewPost(getPostID());
-            } else if (page==='profile') {
-                openProfile(getProfileID());
-            } else if (page.length>0) {
-                printPage(page);
+            let page = getParam('page');
+
+
+            if (pageInfo.hasOwnProperty(page)) {
+                if (page==='post'){
+                    openViewPost(getParam('post_id'));
+                } else if (page==='profile') {
+                    openProfile(getParam('user_id'));
+                } else {
+                    printPage(page);
+                }
             } else {
-                printPage('home');
+                printPage('404');
             }
         })
         .catch(error => {
@@ -303,6 +329,92 @@ function formSubmit(event, type) {
                 break;
         }
 }
+
+
+function deleteFilter(filter) {
+    let wow = {
+        'filter': filter
+    }
+    ajaxGETData('php/removeFilter.php', wow)
+        .then(response=> {
+            if (response['wow']) {
+                document.getElementById(filter).remove();
+                let indexToRemove = userFilters.indexOf(filter);
+
+                if (indexToRemove !== -1) {
+                    userFilters = userFilters.slice(0, filter).concat(userFilters.slice(indexToRemove + 1));
+                }
+
+                document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
+                    <p>filter deleted successfully!</p>
+                `;
+            }
+        })
+        .catch(error=>{
+           console.log(error);
+        });
+}
+// dom exclusive
+function loadFiltersForSettings() {
+    ajaxGETData('php/loadFilters.php')
+        .then(response=> {
+            userFilters = response;
+            if (document.getElementById('filtersFormCollected')) {
+                printFiltersForSettings();
+            }
+        })
+        .catch(error=> {
+            console.log(error);
+        })
+}
+function printFiltersForSettings() {
+    for (let i = 0; i<userFilters.length;i++) {
+        document.getElementById('filtersFormCollected').innerHTML += `
+                <div class="filter" id="${userFilters[i]}">
+                    <p>${userFilters[i]}</p>
+                    <button onclick="deleteFilter('${userFilters[i]}')">delete filter '${userFilters[i]}'</button>
+                </div>
+            `;
+    }
+}
+function addFilters(event) {
+    event.preventDefault();
+    let q = document.getElementById('addFilterValue').value;
+    if (!userFilters.includes(q)) {
+        let wow = {
+            'filter': q
+        }
+        // add ajax here, can still have same responses
+        ajaxGETData('php/changeFilters.php', wow)
+            .then(response => {
+                if (response['thisis']) {
+                    userFilters.push(q);
+                    document.getElementById('filtersFormCollected').innerHTML += `
+                <div class="filter" id="${q}">
+                    <p>${q}</p>
+                    <button onclick="deleteFilter('${q}')">delete filter ${q}</button>
+                </div>
+            `;
+                    document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
+            <p>filter successfully added</p>
+        `;
+                } else {
+                    document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
+            <p>filter NOT added</p>
+        `;
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    } else {
+        document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
+            <p>filter already added</p>
+        `;
+    }
+}
+
+
 
 /// ajax stuff
 function useAJAXGetData(url, data) {
@@ -379,25 +491,15 @@ function openDeleteMenu(postID, userID) {
         }
     });
 }
-
-function closeDeleteMenu() {
-    document.getElementById('deleteSection').remove();
-    removeFromURL('deleting');
-}
 function openCommentMenu(postID) {
     addToURL('post_id', postID);
     addToURL('commenting', true);
-
-
-    // display post being commented on here aswell
-    // make close button an X and red
-
     document.body.innerHTML +=
         `<section id="commentSection">
                                 <form id="addCommentForm" action="php/addComment.php" method="POST">
                                     <textarea maxlength="255" placeholder="Say Something!" name="commentContent" id="commentContent"></textarea>
                                     <br>
-                                                        <input type='text' value='${getPostID()}' name="post_id" hidden required>            
+                                                        <input type='text' value='${getParam('post_id')}' name="post_id" hidden required>            
 
                                     <a id="postButton" type="submit" onclick="formSubmit(event, 'addComment')"><i class="fa-solid fa-paper-plane"></i></a>
                                 </form>
@@ -409,77 +511,15 @@ function openCommentMenu(postID) {
         }
     });
 }
+
+// close overlay
+function closeDeleteMenu() {
+    document.getElementById('deleteSection').remove();
+    removeFromURL('deleting');
+}
 function closeCommentMenu() {
     document.getElementById('commentSection').remove();
     removeFromURL('commenting');
-}
-
-function printPage(page) {
-
-    if(pageInfo.hasOwnProperty(page)) {
-        changeURL(page);
-            document.body.innerHTML =
-                pageInfo['header']['content']+
-                pageInfo[page]['content']+
-                pageInfo['footer']['content']
-
-        if (page === 'home' || page ==='viewFollowingPosts' || page === 'viewFilteredPosts') {
-
-            let w = document.getElementById('homeButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
-
-        }
-        if (page === 'home') {
-            loadPostsForHome();
-            let w= document.getElementById('viewHome').style;
-            w.color = 'white';
-            w.backgroundColor = 'black';
-        }
-        if (page === 'viewFollowingPosts') {
-            loadPostsForFollowing();
-            let w= document.getElementById('viewFollowing').style;
-            w.color = 'white';
-            w.backgroundColor = 'black';
-        }
-        if (page === 'viewFilteredPosts') {
-            loadPostsForFiltering();
-            let w= document.getElementById('viewFiltered').style;
-            w.color = 'white';
-            w.backgroundColor = 'black';
-        }
-        if (page === 'leaderboard') {
-            loadPostsForLeaderboard();
-
-            let w = document.getElementById('leaderboardButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
-        }
-        if (page === 'post') {
-            loadPostsForViewPost(getPostID());
-        }
-        if (page === 'settings') {
-            let w = document.getElementById('settingsButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
-        }
-        if (page === 'profile') {
-            loadPostsForProfile(getProfileID());
-
-            let w = document.getElementById('profileButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
-        }
-
-        if (getParam('commenting')) {
-            openCommentMenu(getPostID());
-        }
-        if (getParam('deleting')) {
-            openDeleteMenu(getPostID(), getParam('user_id'));
-        }
-    } else {
-        printPage('404');
-    }
 }
 
 // URL stuff
@@ -513,34 +553,11 @@ function removeFromURL(param) {
 
     window.history.replaceState({}, '', currentURL.toString());
 }
-
-// get functions (specific)
-// think about removing and just using getParam in all cases
 function getParam(param) {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    return urlSearchParams.get(param);
-}
-function getPage() {
-    let w = new URLSearchParams(window.location.search).get('page');
-    if (w === null) {
-        return 'home';
-    } else {
-        return w;
-    }
-}
-function getPostID() {
-    return new URLSearchParams(window.location.search).get('post_id');
-}
-function getProfileID() {
-    let w = new URLSearchParams(window.location.search).get('user_id');
-    if (w === null) {
-        return 0;
-    } else {
-        return w;
-    }
+    return new URLSearchParams(window.location.search).get(param);
 }
 
-
+// interact with post/account
 function addFollow(followingID, followedID) {
     let wow = {
         'followed': followedID,
@@ -601,21 +618,7 @@ function deletePost(postID, userID) {
     closeDeleteMenu();
 }
 
-
-function loadPostsForFollowing() {
-    let wow = {
-        'offset': postsOffset,
-        'limit': postsLimit
-    }
-    useAJAXGetData('php/loadPostsFollowing.php', wow)
-        .then(posts => {
-            console.log(posts);
-            printPostContent(posts, 'printPostsSection');
-        })
-        .catch(error => {
-            console.log('Error:', error);
-        });
-}
+// load posts
 function loadPostsForFiltering() {
     let wow = {
         'offset': postsOffset,
@@ -624,6 +627,19 @@ function loadPostsForFiltering() {
     useAJAXGetData('php/loadPostsFiltered.php', wow)
         .then(posts => {
             console.log(posts);
+            printPostContent(posts, 'printPostsSection');
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+}
+function loadPostsForFollowing() {
+    let wow = {
+        'offset': postsOffset,
+        'limit': postsLimit
+    }
+    useAJAXGetData('php/loadPostsFollowing.php', wow)
+        .then(posts => {
             printPostContent(posts, 'printPostsSection');
         })
         .catch(error => {
@@ -680,8 +696,70 @@ function loadPostsForLeaderboard() {
         });
 }
 
-function printProfileContent(user_info, idOfPrint) {
 
+// print content
+function printPage(page) {
+        changeURL(page);
+        document.body.innerHTML =
+            pageInfo['header']['content']+
+            pageInfo[page]['content']+
+            pageInfo['footer']['content']
+
+        if (page === 'home' || page ==='viewFollowingPosts' || page === 'viewFilteredPosts') {
+            let w = document.getElementById('homeButton');
+            w.style.backgroundColor = 'black';
+            w.style.color = 'white'
+        }
+        if (page === 'home') {
+            loadPostsForHome();
+            let w= document.getElementById('viewHome').style;
+            w.color = 'white';
+            w.backgroundColor = 'black';
+        }
+        if (page === 'viewFollowingPosts') {
+            loadPostsForFollowing();
+            let w= document.getElementById('viewFollowing').style;
+            w.color = 'white';
+            w.backgroundColor = 'black';
+        }
+        if (page === 'viewFilteredPosts') {
+            loadPostsForFiltering();
+            let w= document.getElementById('viewFiltered').style;
+            w.color = 'white';
+            w.backgroundColor = 'black';
+        }
+        if (page === 'leaderboard') {
+            loadPostsForLeaderboard();
+
+            let w = document.getElementById('leaderboardButton');
+            w.style.backgroundColor = 'black';
+            w.style.color = 'white'
+        }
+        if (page === 'post') {
+            loadPostsForViewPost(getParam('post_id'));
+        }
+        if (page === 'settings') {
+            printFiltersForSettings(userFilters);
+            let w = document.getElementById('settingsButton');
+            w.style.backgroundColor = 'black';
+            w.style.color = 'white'
+        }
+        if (page === 'profile') {
+            loadPostsForProfile(getParam('user_id'));
+
+            let w = document.getElementById('profileButton');
+            w.style.backgroundColor = 'black';
+            w.style.color = 'white'
+        }
+
+        if (getParam('commenting')) {
+            openCommentMenu(getParam('post_id'));
+        }
+        if (getParam('deleting')) {
+            openDeleteMenu(getParam('post_id'), getParam('user_id'));
+        }
+}
+function printProfileContent(user_info, idOfPrint) {
     if (profileCount === 0) {
         document.getElementById(idOfPrint).innerHTML += `
         <section id="profileHeader">
@@ -730,8 +808,8 @@ function printProfileContent(user_info, idOfPrint) {
     }
 }
 function printPostContent(posts, idOfPrint) {
-    if (posts.length === 0 && getPage() !== 'leaderboard') {
-        if (getPage() === 'post') {
+    if (posts.length === 0 && getParam('page') !== 'leaderboard') {
+        if (getParam('page') === 'post') {
             document.getElementById('loadMoreButtonDiv').innerHTML = `
                   <p>There are no more comments!</p>
             `;
@@ -772,7 +850,7 @@ function printPostContent(posts, idOfPrint) {
             `
         }
 
-        if (getPage() === 'leaderboard') {
+        if (getParam('page') === 'leaderboard') {
             document.getElementById('post_id_'+p['post_id']).innerHTML += `
                 <div class="leadboardNumber">
                     <h1>
@@ -784,7 +862,7 @@ function printPostContent(posts, idOfPrint) {
     }
 
 
-    let w = getPage();
+    let w = getParam('page');
 
     if (w=== 'home' || w==='viewFollowingPosts' || w==='viewFilteredPosts') {
         postsOffset+=25;
@@ -796,5 +874,7 @@ function printPostContent(posts, idOfPrint) {
         profileOffset += 25;
     }
 }
+
+
 // start app
 app();
