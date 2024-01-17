@@ -814,7 +814,7 @@ function printPostContent(posts, idOfPrint) {
             `;
         } else {
             document.getElementById('loadMoreButtonDiv').innerHTML = `
-                  <p>There are no more posts!</p>
+                  <p>There are no more posts!!</p>
             `;
         }
     }
