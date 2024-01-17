@@ -139,15 +139,14 @@ function app() {
                                     <br>
                                     <a id="postButton" type="submit" onclick="formSubmit(event, 'makeAPost')"><i class="fa-solid fa-paper-plane"></i></a>
                                 </form>
-                            </section>
-                            <section id="a-group">
-                                <div id="a-group-inner">
+                      <div id="a-group-inner">
                                     <a id="viewHome" onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
                                     <a onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
                                     <a onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>
 </div>
                                    
                             </section>
+            
                             <section id="printPostsSection">
                                 
                             </section>
@@ -165,7 +164,7 @@ function app() {
 <h1>add pfp</h1>
 <form id="addPFPForm" action="php/changePFP.php" method="POST">
     <img src="${pfpp}" width="50px" height="50px">
-    <input type="file" name="file" id="file" accept=".pdf, .doc, .docx, .txt">
+    <input type="file" name="file" id="file" accept=".png .jpg .jpeg">
     <button type="submit" onclick="formSubmit(event, 'changePFP')">change pfp</button>
 </form>
 <h1>username</h1>
@@ -823,28 +822,25 @@ function printPostContent(posts, idOfPrint) {
     for (let i = 0; i<posts.length; i++) {
         let p = posts[i];
         document.getElementById(idOfPrint).innerHTML += `
-            <div id="post_id_${p['post_id']}" class="post">
-                            <div class="flex-row">
+            <div class="post" id="post_id_${p['post_id']}">
+                            <div class="flex-row align-bottom">
                 <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
                 <a class="profileLink" onclick="openProfile(${p['user_id']})">@${p['username']}</a> 
 </div>
                 <h2>${p['content']}</h2>
-                <br>
-                <div class="flex-row" >
+                <div class="flex-row post-buttons"  id="post_id_add_delete_${p['post_id']}">
                 <a onclick="addALike(${p['post_id']})"><i class="fa-solid fa-heart"></i></a>
                 <p id="${p['post_id']}_likes_count">${p['likes']}</p>         
                 <a onclick="openCommentMenu(${p['post_id']}, ${p['super_parent_post_id']})"><i class="fa-solid fa-comment"></i></a>
                 <p>${p['comments']}</p>         
                 <a onclick="openViewPost(${p['post_id']})"><i class="fa-solid fa-eye"></i></a>
-
-                <div class="flex-row" id="post_id_add_delete_${p['post_id']}">
-                </div>
             <div class="postOverlay">
             </div>
-</div>           
+</div>         
+  
             `;
         if (p['user_id'] === userIDD) {
-            document.getElementById('post_id_add_delete_'+p['post_id']).innerHTML = `
+            document.getElementById('post_id_add_delete_'+p['post_id']).innerHTML += `
                 <a onclick="openDeleteMenu(${p['post_id']}, ${p['user_id']})"><i class="fa-solid fa-trash"></i></a>
                 <br>
             `

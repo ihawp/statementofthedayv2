@@ -1,12 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+:root {
+    --one: #4f6386;
+    --two: #f7fff7;
+    --three: #98FB98;
+    --four: #F7CAC9;
+    --five: #DAA520;
+}
+
 body {
     margin: 0;
     font-size: 1em;
     font-family: 'League Spartan', sans-serif;
-    background-color: white;
-    color: black;
+    background-color: var(--one);
+    color: var(--two);
 }
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.align-bottom {
+    align-items: end;
+}
+
 img {
     border: 1.3px black solid;
 }
@@ -25,44 +43,20 @@ a:hover {
 }
 
 #loadMoreButtonDiv p a {
-    color: grey;
+    color: var(--two);
     font-size: 1em;
 }
 #loadMoreButtonDiv p a:hover {
     color: black;
 }
 
-button {
-    background-color: white;
-    font-size: 1.2em;
-    font-weight: 700;
-    border: 0.5px black solid;
-
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-button:hover {
-    background-color: black;
-    color: white;
-}
-h1 {
-    font-size: 2em;
-    font-weight: 800;
-}
-h2 {
-    font-size: 1.5em;
-    font-weight: 600;
-}
-p {
-    font-weight: 500;
-}
 section, header, nav, #loadMoreButtonDiv, footer {
-    width: 100%;
-
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+header {
+    width: 100%;
 }
 footer {
     box-shadow: -1px 0px 11px rgb(0,0,0,0.43);
@@ -88,30 +82,47 @@ footer {
 }
 header {
     z-index: 9999;
+    height: 90px;
     position: fixed;
-    background-color: white;
-    box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #fixedHeader {
-    height: 49px;
+    height: 90px;
 }
+
 nav {
+    width: min-content;
+    height: max-content;
     justify-content: center;
     flex-direction: row;
+    border-radius: 16px;
+    box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
+
 }
 nav a {
+    box-sizing: border-box;
     margin: 0;
     font-size: 2em;
-    padding: 7px;
-    width: 111px;
+    padding: 18px 0;
+    width: 155px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    color: black;
-    background-color: white;
+    color: var(--one);
+    background-color: var(--two);
     transition: all 0.1s ease;
+}
+nav a:first-child {
+    border-bottom-left-radius: 16px;
+    border-top-left-radius: 16px;
+}
+nav a:last-child {
+    border-bottom-right-radius: 16px;
+    border-top-right-radius: 16px;
 }
 nav a:hover {
     color: white;
@@ -119,43 +130,60 @@ nav a:hover {
 }
 
 .post {
-    padding: 19px;
+    box-sizing: border-box;
 
-    width: 462px;
+    padding: 19px 5px;
+
+    width: 600px;
     height: max-content;
 
-    border-top: 0.6px rgb(0,0,0, 0.5) solid;
-    border-bottom: 0.6px rgb(0,0,0, 0.5) solid;
+    border: 1px black solid;
 }
 .post:last-child, .post:first-child {
-    border: 0;
 }
 .post h2 {
-    margin-bottom: 15px;
-    margin-top: 25px;
+    box-sizing: border-box;
+    padding: 9px;
+    margin-top: 10px;
     font-weight: 400;
-}
-.post p {
-    margin: 11px;
-    margin-left: 4px;
-    margin-right: 8px;
-}
-.post a {
-    font-weight: 800;
+
+    font-size: 1.68em;
 }
 .post img {
-    width: 50px;
-    height: 50px;
+    width: 47px;
+    height: 47px;
     border-radius: 150px;
-    margin-right: 7px;
+    margin-left: 5px;
+    object-fit: cover;
 }
 .profileLink {
+    margin-left: 5px;
+    margin-bottom: 0;
+    font-size: 1.65em;
+    font-weight: 500;
+}
+
+.post-buttons {
+    min-width: 180px;
+    width: max-content;
+    height: 25px;
+
+    box-sizing: border-box;
+}
+.post-buttons a {
     margin: 0;
-    font-size: 1.8em;
+    padding: 0;
+    font-size: 24px;
+    font-weight: 800;
+
+
+    width: 25%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.postHover {
-    cursor: pointer;
-}
+
 #profileHeader h1 {
     margin-top: 15px;
     margin-bottom: -15px;
@@ -173,22 +201,27 @@ nav a:hover {
     height: 200px;
     border-radius: 150px;
 }
-textarea {
+#makeAPost, #commentContent {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    height: 190px;
+}
+#makeAPost {
+    box-sizing: border-box;
+    background-color: var(--two);
     border-radius: 8px;
     resize: none;
-    width: 462px;
-    height: 160px;
+    width: 502px;
+    height: 190px;
     padding: 19px;
 
     font-size: 1.6em;
     font-family: 'League Spartan', sans-serif;
 
-    border: 2px solid black;
-}
-#makeAPost, #commentContent {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    height: 190px;
+    border: 1px solid var(--two);
+    margin-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 #makeAPostForm, #addCommentForm {
     position: relative;
@@ -215,12 +248,6 @@ textarea {
     color: white;
     background-color: black;
 }
-.flex-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
 #viewPostSection:first-child {
     background-color: blue;
 }
@@ -252,23 +279,27 @@ textarea {
 #followingCount, #followCount {
     font-weight: 500;
 }
-#a-group {
-    flex-direction: row;
-    justify-content: center;
-    text-align: center;
-}
 #a-group-inner a {
     width: 33.33%;
-    font-size: 3em;
+    font-size: 2.3em;
 
-    border: black solid 1px;
+    border: var(--two) solid 0.5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     margin: 0;
     padding: 5px 0;
+
+    transition: all 0.1s ease;
+
+    background-color: var(--two);
+    color: var(--one);
 }
 #a-group-inner a:hover {
-    background-color: black;
-    color: white;
+    background-color: var(--one);
+    color: var(--two);
 }
 
 #a-group-inner {
@@ -276,17 +307,18 @@ textarea {
     flex-direction: row;
     justify-content: center;
     text-align: center;
-    border: black 1px solid;
-    border-radius: 9px;
+    border: var(--two) 1px solid;
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    margin-top:-5px;
 
     width: 500px;
+    height: 60px;
 }
 #a-group-inner a:first-child {
-    border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
 }
 #a-group-inner a:last-child {
-    border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
 
