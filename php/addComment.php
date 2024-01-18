@@ -8,7 +8,7 @@ $userID = htmlspecialchars($_SESSION['user_id']);
 $commentContent = htmlspecialchars($_POST['commentContent']);
 
 if ($commentContent.ob_get_length() <= 0) {
-    header("Location: ../index.html?page=post&post_id=$parentID&error=accidentalclick");
+    header("Location: ../index.html?page=home&viewing_post=true&post_id=$parentID&error=accidentalclick");
     exit();
 }
 
@@ -20,10 +20,8 @@ $resultCheckSuperParent = $stmtCheckSuperParent->get_result();
 $rowCheckSuperParent = $resultCheckSuperParent->fetch_assoc();
 
 if ($rowCheckSuperParent && $rowCheckSuperParent['super_parent_post_id'] === 0) {
-    // If super_parent_post_id is 0, set it to parentID
     $superParentID = $parentID;
 } elseif ($rowCheckSuperParent && $rowCheckSuperParent['super_parent_post_id'] !== 0) {
-    // If super_parent_post_id is not 0, use that value
     $superParentID = $rowCheckSuperParent['super_parent_post_id'];
 }
 
@@ -40,7 +38,7 @@ if ($stmtInsertComment->execute()) {
     $stmtUpdateCommentCount->execute();
 
     // Redirect to the post page
-    header('Location: ../index.html?page=post&post_id=' . $parentID);
+    header('Location: ../index.html?page=home&post_id=' . $parentID.'&viewing_post=true');
     exit();
 } else {
     header('Location: ../index.html?page=home');
