@@ -8,6 +8,28 @@
     --five: #DAA520;
 }
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #b5b5b5;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background-color: #8c8c8c;
+}
+
+
 body {
     margin: 0;
     font-size: 1em;
@@ -26,7 +48,9 @@ body {
 }
 
 img {
-    border: 1.3px black solid;
+    border: 1.3px var(--two) solid;
+
+    object-fit: cover;
 }
 .postImg {
     cursor: pointer;
@@ -45,9 +69,6 @@ a:hover {
 #loadMoreButtonDiv p a {
     color: var(--two);
     font-size: 1em;
-}
-#loadMoreButtonDiv p a:hover {
-    color: black;
 }
 
 section, header, nav, #loadMoreButtonDiv, footer {
@@ -99,21 +120,21 @@ nav {
     flex-direction: row;
     border-radius: 16px;
     box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
-
+    box-sizing: border-box;
 }
 nav a {
     box-sizing: border-box;
     margin: 0;
     font-size: 2em;
     padding: 18px 0;
-    width: 155px;
+    width: 210px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    color: var(--one);
-    background-color: var(--two);
+    color: var(--two);
+    background-color: var(--one);
     transition: all 0.1s ease;
 }
 nav a:first-child {
@@ -125,25 +146,34 @@ nav a:last-child {
     border-top-right-radius: 16px;
 }
 nav a:hover {
-    color: white;
-    background-color: black;
+    color: var(--one);
+    background-color: var(--two);
 }
 
 .post {
+    cursor: pointer;
+    background-color: var(--one);
     box-sizing: border-box;
 
-    padding: 19px 5px;
+    padding: 12px 0 0 0;
 
     width: 600px;
     height: max-content;
 
-    border: 1px black solid;
+    border: 1px rgb(255,255,255,0.2) solid;
+    border-radius: 4px;
+
+    margin-top: 4px;
 }
-.post:last-child, .post:first-child {
+.paddingg {
+    padding: 0 0 0 8px;
+}
+.post:first-child {
+    margin-top: 0;
 }
 .post h2 {
     box-sizing: border-box;
-    padding: 9px;
+    padding: 5px 10px;
     margin-top: 10px;
     font-weight: 400;
 
@@ -156,32 +186,57 @@ nav a:hover {
     margin-left: 5px;
     object-fit: cover;
 }
-.profileLink {
+.post a:last-child {
     margin-left: 5px;
     margin-bottom: 0;
-    font-size: 1.65em;
-    font-weight: 500;
+    font-size: 1.34em;
+    font-weight: 700;
+    color: rgb(255,255,255,0.8);
+}
+.post a:last-child:hover {
+    color: black;
+}
+.main-post {
+    border-radius: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
-.post-buttons {
-    min-width: 180px;
-    width: max-content;
-    height: 25px;
 
+.post-buttons {
+    width: 100%;
+    height: 30px;
+
+    margin-top: -15px;
+
+    border: 0.75px rgb(255,255,255,0.1) solid;
+
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
     box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
 }
 .post-buttons a {
     margin: 0;
     padding: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 800;
 
 
-    width: 25%;
+    width: 20%;
 
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.post-buttons p {
+    font-size: 16px;
+    font-weight: 600;
 }
 
 #profileHeader h1 {
@@ -192,36 +247,45 @@ nav a:hover {
     margin: 3px;
 }
 #profileHeader {
+    box-sizing: border-box;
     padding: 19px;
-    width: 462px;
-    border-bottom: 0.6px rgb(0,0,0, 0.5) solid;
+    width: 600px;
 }
 #profileHeader img {
     width: 200px;
     height: 200px;
     border-radius: 150px;
 }
+
+textarea:focus {
+    outline: none;
+}
 #makeAPost, #commentContent {
     margin-top: 25px;
-    margin-bottom: 15px;
-    height: 190px;
-}
-#makeAPost {
+
     box-sizing: border-box;
     background-color: var(--two);
-    border-radius: 8px;
+    border-radius: 4px;
     resize: none;
-    width: 502px;
-    height: 190px;
+    width: 600px;
+    height: 160px;
     padding: 19px;
 
-    font-size: 1.6em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    font-size: 1.5em;
     font-family: 'League Spartan', sans-serif;
 
-    border: 1px solid var(--two);
+    border: 0;
     margin-bottom: 0;
-    border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+#commentContent {
+    border-radius: 0;
+    margin-top: 0;
+    width: 600px;
 }
 #makeAPostForm, #addCommentForm {
     position: relative;
@@ -231,111 +295,180 @@ nav a:hover {
     align-items: center;
     justify-content: center;
 
-    font-size: 1.75em;
+    font-size: 1.35em;
 
-    padding: 10px 28px;
+    padding: 5px 18px;
     border-radius: 150px;
-    background-color: white;
-    color: black;
-    border: 2px black solid;
+    background-color: var(--two);
+    color: var(--one);
+    border: 2px var(--one) solid;
 
     position: absolute;
 
-    bottom: 30px;
-    right: 15px;
+    bottom: 35px;
+    right: 5px;
 }
 #postButton:hover {
     color: white;
     background-color: black;
 }
-#viewPostSection:first-child {
+
+#post-options {
+    margin-top: -3px;
+    background-color: var(--two);
+
+    color: var(--one);
+
+    border-radius: 0 0 4px 4px;
+
+    height: 30px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+
+/* alert system*/
+.alert {
     background-color: blue;
+    width: 100%;
+    min-height: 75px;
+
+    margin-top: 15px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+
+
+    padding: 5px;
+
+    font-size: 1.15em;
 }
+.alert i {
+    padding: 5px 12.5px;
+    border-radius: 150px;
 
-@media screen and (max-width: 500px) {
-    header, section, #profileHeader, textarea, .post, nav, #loadMoreButtonDiv {
-        width: 100vw;
-    }
-
-    .post, textarea, #profileHeader, #loadMoreButtonDiv {
-        width: 90vw;
-        padding: 5vw;
-    }
-
-    textarea {
-        border: 0;
-    }
-
-    #makeAPost, #commentContent {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
+    background-color: rgb(0,0,0,0.2);
+    margin-right: 10px;
+    margin-left: 10px;
 }
+#alert-container {
+    z-index: 10001;
+    position: fixed;
+    overflow: hidden;
 
+    left: 15px;
+    bottom: 15px;
 
+    width: 200px;
+    height: 60vh;
+
+    display: flex;
+    align-items: start;
+    justify-content: end;
+    flex-direction: column;
+}
+/* end of alert system */
+
+/* relatedto profileheader*/
+/* changes font weights for followers */
+/* and following text on profile header*/
 #followersLabel, #followingLabel {
     font-weight: 600;
 }
 #followingCount, #followCount {
     font-weight: 500;
 }
-#a-group-inner a {
-    width: 33.33%;
-    font-size: 2.3em;
 
-    border: var(--two) solid 0.5px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin: 0;
-    padding: 5px 0;
-
-    transition: all 0.1s ease;
-
-    background-color: var(--two);
-    color: var(--one);
-}
-#a-group-inner a:hover {
-    background-color: var(--one);
-    color: var(--two);
-}
-
-#a-group-inner {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    text-align: center;
-    border: var(--two) 1px solid;
-    border-bottom-left-radius: 9px;
-    border-bottom-right-radius: 9px;
-    margin-top:-5px;
-
-    width: 500px;
-    height: 60px;
-}
-#a-group-inner a:first-child {
-    border-bottom-left-radius: 8px;
-}
-#a-group-inner a:last-child {
-    border-bottom-right-radius: 8px;
-}
-
-#commentSection, #deleteSection {
+#commentSection, #deleteSection, #viewPostSection {
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
+    height: auto;
     z-index: 10000;
     top: 0;
     left: 0;
     position: fixed;
     background-color: rgb(0,0,0,0.43);
-
     justify-content: center;
+}
+#viewPostSectionInner {
+    position: relative;
+    overflow: auto;
+    height: min-content;
+    max-height: 80vh;
+
+    box-sizing: border-box;
 }
 
 .leaderboardNumber {
     top: 0;
     left: 0;
     position: absolute;
+}
+
+
+#home-post-buttons {
+    width: 600px;
+
+    display: flex;
+    box-sizing: border-box;
+
+    border-radius: 0;
+    margin-bottom: 2.5px;
+
+    margin-top: -23px;
+}
+#home-post-buttons a {
+    width: 33.33%;
+    height: 45px;
+
+    color: var(--two);
+    background-color: rgb(255,255,255,0.1);
+
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75em;
+}
+#home-post-buttons a:hover {
+    background-color: var(--two);
+    color: var(--one);
+}
+#home-post-buttons a:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+#home-post-buttons a:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+#settingsSection {
+    width: 600px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+}
+
+.align-end {
+    display: flex;
+    align-items: left;
+    justify-content: end;
+}
+#addFilters, #filtersForm, #filtersFormCollected {
+    flex-direction: column;
+    background-color: black;
+}
+
+#addPFPForm img {
+    border: 0;
 }

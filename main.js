@@ -14,6 +14,7 @@ let year = d.getFullYear();
 let postsOffset = 0;
 let profileOffset = 0;
 let postOffset = 0;
+let viewPostOffset = 0;
 const postsLimit = 25;
 
 let userFilters = new Array();
@@ -43,6 +44,9 @@ function app() {
                 pageInfo = {
                     'header': {
                         'content': `
+                   <div id="alert-container">
+                        
+                        </div>
                         <header>
                             <nav>
                             <a onclick="printPage('home')">home</a>                      
@@ -97,13 +101,11 @@ function app() {
             } else if (logged === true) {
                 loadFiltersForSettings();
                 pageInfo = {
-                    // make function for nav clicking
-                    // so that the nav can be coloured when you
-                    // are on a certain page
-
-
                     'header': {
                         'content': `
+                   <div id="alert-container">
+                        
+                        </div>
                             <header>
                             <nav>
                             <a id="leaderboardButton" onclick="printPage('leaderboard')"><i class="fa-solid fa-trophy"></i></a>                      
@@ -133,20 +135,6 @@ function app() {
                     },
                     'home': {
                         'content': `
-                            <section>
-                                <form id="makeAPostForm" action="php/addPost.php" method="POST">
-                                    <textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="makeAPost"></textarea>
-                                    <br>
-                                    <a id="postButton" type="submit" onclick="formSubmit(event, 'makeAPost')"><i class="fa-solid fa-paper-plane"></i></a>
-                                </form>
-                      <div id="a-group-inner">
-                                    <a id="viewHome" onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
-                                    <a onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
-                                    <a onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>
-</div>
-                                   
-                            </section>
-            
                             <section id="printPostsSection">
                                 
                             </section>
@@ -158,51 +146,57 @@ function app() {
                     'settings': {
                         'content': `
 <section>
- <h1>you are logged in!</h1>
-                            <a href="php/logout.php">logout</a>
+<div id="settingsSection">
 
-<h1>add pfp</h1>
-<form id="addPFPForm" action="php/changePFP.php" method="POST">
-    <img src="${pfpp}" width="50px" height="50px">
-    <input type="file" name="file" id="file" accept=".png .jpg .jpeg">
-    <button type="submit" onclick="formSubmit(event, 'changePFP')">change pfp</button>
-</form>
+<div class="flex-row align-end">
+ <a href="php/logout.php">logout</a>
+</div>
+
+<div class="flex-row align-end">
+    <form id="addPFPForm" action="php/changePFP.php" method="POST">
+        <img src="${pfpp}" width="200px" height="200px">
+        <input type="file" name="file" id="file" accept=".png .jpg .jpeg">
+        <button type="submit" onclick="formSubmit(event, 'changePFP')">change pfp</button>
+    </form>
+</div>
+
+<div class="flex-row align-end">
 <h1>username</h1>
 <form id="usernameForm">
     <input placeholder="${usernamee}" disabled>
 </form>
+</div>
+
+<div class="flex-row align-end">
 <h1>change password</h1>
 <form id="passwordForm">
     <input placeholder="*******">
 </form>
-<h1>add filters</h1>
-<div id="filtersFormCollectedErrorBox">
-
 </div>
-<form id="filtersForm">
-    <input type="text" id="addFilterValue">
-    <button type="submit" onclick="addFilters(event)">add filter</button>
-</form>
-<div id="filtersFormCollected">
+
+<div id="addFilters">
+    <h1>add filters</h1>
+    <div id="filtersFormCollectedErrorBox">
+    
+    </div>
+    <form id="filtersForm">
+        <input type="text" id="addFilterValue">
+        <button type="submit" onclick="addFilters(event)">add filter</button>
+    </form>
+    <div id="filtersFormCollected">
+    
+    </div>
+</div>
 
 </div>
 </section>
                           
                 `
                     },
-                    'post': {
-                        'content': `
-                            <section id="viewPostSection">
-                            </section>
-                            <div id="loadMoreButtonDiv">
-</div>
-                        `
-                    },
                     'leaderboard': {
                         'content': `
                            
                             <section id="leaderboardPostsSection">
-                            <h1>Leaderboard</h1>
                             </section>
                             <div id="loadMoreButtonDiv">
                             <p>Want to make it on the leaderboard?</p>
@@ -219,21 +213,6 @@ function app() {
                     },
                     'viewFollowingPosts': {
                         'content': `
-                            <section>
-                                <form id="makeAPostForm" action="php/addPost.php" method="POST">
-                                    <textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="makeAPost"></textarea>
-                                    <br>
-                                    <a id="postButton" type="submit" onclick="formSubmit(event, 'makeAPost')"><i class="fa-solid fa-paper-plane"></i></a>
-                                </form>
-                            </section>
-                            <section id="a-group">
-                                <div id="a-group-inner">
-                                    <a onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
-                                    <a id="viewFollowing" onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
-                                    <a onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>
-</div>
-                                   
-                            </section>
                             <section id="printPostsSection">
                                 
                             </section>
@@ -247,21 +226,6 @@ function app() {
                     },
                     'viewFilteredPosts': {
                         'content': `
-                            <section>
-                                <form id="makeAPostForm" action="php/addPost.php" method="POST">
-                                    <textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="makeAPost"></textarea>
-                                    <br>
-                                    <a id="postButton" type="submit" onclick="formSubmit(event, 'makeAPost')"><i class="fa-solid fa-paper-plane"></i></a>
-                                </form>
-                            </section>
-                            <section id="a-group">
-                                <div id="a-group-inner">
-                                    <a onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
-                                    <a onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
-                                    <a id="viewFiltered" onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>
-</div>
-                                   
-                            </section>
                             <section id="printPostsSection">
                                 
                             </section>
@@ -278,9 +242,7 @@ function app() {
 
 
             if (pageInfo.hasOwnProperty(page)) {
-                if (page==='post'){
-                    openViewPost(getParam('post_id'));
-                } else if (page==='profile') {
+                if (page==='profile') {
                     openProfile(getParam('user_id'));
                 } else {
                     printPage(page);
@@ -320,7 +282,6 @@ function formSubmit(event, type) {
                 break;
             case ('addComment'):
                 addComment.submit();
-                closeCommentMenu();
                 break;
             case ('changePFP'):
                 console.log('wow');
@@ -457,15 +418,47 @@ function openProfile(userID) {
 
     `;
 }
+
+function openViewPostInteract(postID) {
+    if (getParam('viewing_post')) {
+        closeViewPostMenu();
+    }
+    openViewPost(postID);
+}
 function openViewPost(postID) {
     addToURL('post_id', postID);
-    printPage('post');
-    document.getElementById('loadMoreButtonDiv').innerHTML = `
-                                <a onclick="loadPostsForViewPost(${postID})"><i class="fa-solid fa-circle-chevron-down"></i></a>                            
+    addToURL('viewing_post', true);
+    document.body.innerHTML +=
+        `<section id="viewPostSection">
+      <div id="viewPostSectionInner">
+            <div id="VPSMainPost">
+            
+            </div>
+            <div>
+               <form id="addCommentForm" action="php/addComment.php" method="POST">
+                                    <textarea maxlength="255" placeholder="Say Something!" name="commentContent" id="commentContent"></textarea>
+                                    <br>
+                                                        <input type='text' value='${getParam('post_id')}' name="post_id" hidden required>            
 
-    `;
+                                    <a id="postButton" type="submit" onclick="formSubmit(event, 'addComment')"><i class="fa-solid fa-paper-plane"></i></a>
+                                </form> 
+            </div>
+                
+            </div>      
+        </section>`;
+    loadPostsForViewPost(postID);
+    document.getElementById('viewPostSection').addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeViewPostMenu();
+        }
+    });
+
+
+
+    // send the data off get the main post and all comments, print them accordingly
 }
-function openDeleteMenu(postID, userID) {
+function openDeleteMenu(event, postID, userID) {
+    event.stopPropagation();
     // just like comment menu
     // have a popup confirming whether they
     // would like to delete their post or not!
@@ -490,35 +483,16 @@ function openDeleteMenu(postID, userID) {
         }
     });
 }
-function openCommentMenu(postID) {
-    addToURL('post_id', postID);
-    addToURL('commenting', true);
-    document.body.innerHTML +=
-        `<section id="commentSection">
-                                <form id="addCommentForm" action="php/addComment.php" method="POST">
-                                    <textarea maxlength="255" placeholder="Say Something!" name="commentContent" id="commentContent"></textarea>
-                                    <br>
-                                                        <input type='text' value='${getParam('post_id')}' name="post_id" hidden required>            
-
-                                    <a id="postButton" type="submit" onclick="formSubmit(event, 'addComment')"><i class="fa-solid fa-paper-plane"></i></a>
-                                </form>
-                                <button onclick="closeCommentMenu()">close</button>
-</section>`;
-    document.getElementById('commentSection').addEventListener('click', function(event) {
-        if (event.target === this) {
-            closeCommentMenu();
-        }
-    });
-}
 
 // close overlay
 function closeDeleteMenu() {
     document.getElementById('deleteSection').remove();
     removeFromURL('deleting');
 }
-function closeCommentMenu() {
-    document.getElementById('commentSection').remove();
-    removeFromURL('commenting');
+function closeViewPostMenu() {
+    document.getElementById('viewPostSection').remove();
+    removeFromURL('viewing_post');
+    viewPostOffset = 0;
 }
 
 // URL stuff
@@ -581,7 +555,8 @@ function addFollow(followingID, followedID) {
             console.log(error);
         });
 }
-function addALike(postID) {
+function addALike(event, postID) {
+    event.stopPropagation();
     let wow = {
         'post_id': postID
     }
@@ -589,15 +564,40 @@ function addALike(postID) {
         .then(response => {
             if (response['removed_like']) {
                 document.getElementById(`${postID}_likes_count`).innerText = parseInt(document.getElementById(`${postID}_likes_count`).innerText) - 1;
+                createAlert('Like Removed', 'red');
+
+                if(document.getElementById(`viewpost_${postID}_likes_count`)) {
+                    document.getElementById(`viewpost_${postID}_likes_count`).innerText = parseInt(document.getElementById(`viewpost_${postID}_likes_count`).innerText) - 1;
+                }
             }
             if (response['like_added']) {
                 document.getElementById(`${postID}_likes_count`).innerText = parseInt(document.getElementById(`${postID}_likes_count`).innerText) + 1;
+                createAlert('Like Added', 'green');
+                if(document.getElementById(`viewpost_${postID}_likes_count`)) {
+                    document.getElementById(`viewpost_${postID}_likes_count`).innerText = parseInt(document.getElementById(`viewpost_${postID}_likes_count`).innerText) + 1;
+                }
             }
         })
         .catch(error => {
             console.log('Error:', error);
         });
 }
+let alertCount = 0;
+function createAlert(alert, colour) {
+    document.getElementById('alert-container').innerHTML += `
+                    <div class="alert" id="alert-box-${alertCount}">
+                        <i class="fa-solid fa-exclamation"></i>
+                        <p>${alert}</p>
+                    </div>
+                `;
+    document.getElementById(`alert-box-${alertCount}`).style.backgroundColor = colour;
+    let current = alertCount;
+    setTimeout(function() {
+        document.getElementById(`alert-box-${current}`).remove();
+    }, 3000);
+    alertCount++;
+}
+
 function deletePost(postID, userID) {
     let wow = {
         'post_id': postID,
@@ -607,6 +607,7 @@ function deletePost(postID, userID) {
         .then(response => {
             if (response['post_deleted']) {
                 document.getElementById(`post_id_${postID}`).remove();
+                createAlert('Post Deleted', 'red');
             }
         })
         .catch(error => {
@@ -661,12 +662,12 @@ function loadPostsForProfile(profileID) {
 }
 function loadPostsForViewPost(postID) {
     let wow = {
-        'offset': postOffset,
+        'offset': viewPostOffset,
         'post_id': postID
     }
     ajaxGETData('php/loadPostandComments.php', wow)
         .then(response=>{
-            printPostContent(response, 'viewPostSection');
+            printPostContentVIEWPOST(response, 'viewPostSectionInner');
         })
         .catch(error=>{
             console.log(error);
@@ -704,58 +705,80 @@ function printPage(page) {
             pageInfo[page]['content']+
             pageInfo['footer']['content']
 
+    // logic based on page var
+
+    if (getParam('viewing_post')) {
+        openViewPost(getParam('post_id'));
+    }
+    if (getParam('deleting')) {
+        openDeleteMenu(getParam('post_id'), getParam('user_id'));
+    }
+
+
+
         if (page === 'home' || page ==='viewFollowingPosts' || page === 'viewFilteredPosts') {
+            document.getElementById('printPostsSection').innerHTML += `
+                                        <section>
+                                <form id="makeAPostForm" action="php/addPost.php" method="POST">
+<textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="makeAPost"></textarea>
+<div id="post-options">
+    <a onclick="">im</a>
+    <a onclick="">im</a>                       
+</div>
+<a id="postButton" type="submit" onclick="formSubmit(event, 'makeAPost')"><i class="fa-solid fa-paper-plane"></i></a>
+                                </form>
+                            </section>
+                            <br>
+                            <br>
+                            
+                            <div id="home-post-buttons">
+      <a id="viewHome" onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
+                                    <a id="viewFollowing" onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
+                                    <a id="viewFiltered" onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>                      
+</div>
+            `;
+
             let w = document.getElementById('homeButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
+            w.style.backgroundColor = '#f7fff7';
+            w.style.color = '#4f6386';
         }
         if (page === 'home') {
             loadPostsForHome();
             let w= document.getElementById('viewHome').style;
-            w.color = 'white';
-            w.backgroundColor = 'black';
+            w.color = '#4f6386';
+            w.backgroundColor = '#f7fff7';
         }
         if (page === 'viewFollowingPosts') {
             loadPostsForFollowing();
             let w= document.getElementById('viewFollowing').style;
-            w.color = 'white';
-            w.backgroundColor = 'black';
+            w.color = '#4f6386';
+            w.backgroundColor = '#f7fff7';
         }
         if (page === 'viewFilteredPosts') {
             loadPostsForFiltering();
             let w= document.getElementById('viewFiltered').style;
-            w.color = 'white';
-            w.backgroundColor = 'black';
+            w.color = '#4f6386';
+            w.backgroundColor = '#f7fff7';
         }
         if (page === 'leaderboard') {
             loadPostsForLeaderboard();
 
             let w = document.getElementById('leaderboardButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
-        }
-        if (page === 'post') {
-            loadPostsForViewPost(getParam('post_id'));
+            w.style.backgroundColor = '#4f6386';
+            w.style.color = '#f7fff7'
         }
         if (page === 'settings') {
             printFiltersForSettings(userFilters);
             let w = document.getElementById('settingsButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
+            w.style.backgroundColor = '#4f6386';
+            w.style.color = '#f7fff7'
         }
         if (page === 'profile') {
             loadPostsForProfile(getParam('user_id'));
 
             let w = document.getElementById('profileButton');
-            w.style.backgroundColor = 'black';
-            w.style.color = 'white'
-        }
-
-        if (getParam('commenting')) {
-            openCommentMenu(getParam('post_id'));
-        }
-        if (getParam('deleting')) {
-            openDeleteMenu(getParam('post_id'), getParam('user_id'));
+            w.style.backgroundColor = '#4f6386';
+            w.style.color = '#f7fff7'
         }
 }
 function printProfileContent(user_info, idOfPrint) {
@@ -821,27 +844,30 @@ function printPostContent(posts, idOfPrint) {
 
     for (let i = 0; i<posts.length; i++) {
         let p = posts[i];
-        document.getElementById(idOfPrint).innerHTML += `
-            <div class="post" id="post_id_${p['post_id']}">
-                            <div class="flex-row align-bottom">
+
+            document.getElementById(idOfPrint).innerHTML += `
+            <div class="post" id="post_id_${p['post_id']}" onclick="openViewPostInteract(${p['post_id']})">
+                            <div class="paddingg">
+                                                        <div class="flex-row align-bottom">
                 <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
-                <a class="profileLink" onclick="openProfile(${p['user_id']})">@${p['username']}</a> 
+                <a class="profileLink" onclick="openProfile(event, ${p['user_id']})">@${p['username']}</a> 
 </div>
                 <h2>${p['content']}</h2>
-                <div class="flex-row post-buttons"  id="post_id_add_delete_${p['post_id']}">
-                <a onclick="addALike(${p['post_id']})"><i class="fa-solid fa-heart"></i></a>
+                </div>
+
+                <div class="flex-row post-buttons" id="post_id_add_delete_${p['post_id']}">
+                <a onclick="addALike(event, ${p['post_id']})"><i class="fa-solid fa-heart"></i></a>
                 <p id="${p['post_id']}_likes_count">${p['likes']}</p>         
-                <a onclick="openCommentMenu(${p['post_id']}, ${p['super_parent_post_id']})"><i class="fa-solid fa-comment"></i></a>
+                <a><i class="fa-solid fa-comment"></i></a>
                 <p>${p['comments']}</p>         
-                <a onclick="openViewPost(${p['post_id']})"><i class="fa-solid fa-eye"></i></a>
             <div class="postOverlay">
             </div>
 </div>         
   
             `;
-        if (p['user_id'] === userIDD) {
+        if (getParam('page') === 'profile' && p['user_id'] === userIDD) {
             document.getElementById('post_id_add_delete_'+p['post_id']).innerHTML += `
-                <a onclick="openDeleteMenu(${p['post_id']}, ${p['user_id']})"><i class="fa-solid fa-trash"></i></a>
+                <a onclick="openDeleteMenu(event, ${p['post_id']}, ${p['user_id']})"><i class="fa-solid fa-trash"></i></a>
                 <br>
             `
         }
@@ -863,11 +889,75 @@ function printPostContent(posts, idOfPrint) {
     if (w=== 'home' || w==='viewFollowingPosts' || w==='viewFilteredPosts') {
         postsOffset+=25;
     }
-    if (w=== 'post') {
-        postOffset += 25;
-    }
     if (w=== 'profile') {
         profileOffset += 25;
+    }
+}
+
+
+function printPostContentVIEWPOST(posts, idOfPrint) {
+    if (posts.length === 0 && getParam('page') !== 'leaderboard') {
+        if (getParam('page') === 'post') {
+            document.getElementById('loadMoreButtonDiv').innerHTML = `
+                  <p>There are no more comments!</p>
+            `;
+        } else {
+            document.getElementById('loadMoreButtonDiv').innerHTML = `
+                  <p>There are no more posts!!</p>
+            `;
+        }
+    }
+
+    for (let i = 0; i<posts.length; i++) {
+        let p = posts[i];
+
+        if (i === 0) {
+            document.getElementById('VPSMainPost').innerHTML += `
+            <div class="post main-post" id="post_id_${p['post_id']}">
+                                                        <div class="paddingg">
+
+                            <div class="flex-row align-bottom">
+                <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
+                <a class="profileLink" onclick="openProfile(${p['user_id']})">@${p['username']}</a> 
+</div>
+                <h2>${p['content']}</h2>
+                </div>
+                <div class="flex-row post-buttons"  id="post_id_add_delete_${p['post_id']}">
+                <a onclick="addALike(event, ${p['post_id']})"><i class="fa-solid fa-heart"></i></a>
+                <p id="viewpost_${p['post_id']}_likes_count">${p['likes']}</p>         
+                <a><i class="fa-solid fa-comment"></i></a>
+                <p>${p['comments']}</p>         
+            <div class="postOverlay">
+            </div>
+</div>         
+  
+            `;
+        } else {
+            document.getElementById(idOfPrint).innerHTML += `
+            <div class="post" id="post_id_${p['post_id']}" onclick="openViewPostInteract(${p['post_id']})">
+                            <div class="paddingg">
+                                                       <div class="flex-row align-bottom">
+                <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
+                <a class="profileLink" onclick="openProfile(${p['user_id']})">@${p['username']}</a> 
+</div>
+                <h2>${p['content']}</h2>
+                </div>
+
+                <div class="flex-row post-buttons"  id="post_id_add_delete_${p['post_id']}">
+                <a onclick="addALike(event, ${p['post_id']})"><i class="fa-solid fa-heart"></i></a>
+                <p id="${p['post_id']}_likes_count">${p['likes']}</p>         
+                <a><i class="fa-solid fa-comment"></i></a>
+                <p>${p['comments']}</p>         
+            <div class="postOverlay">
+            </div>
+</div>         
+  
+            `;
+        }
+    }
+
+    if (getParam('viewing_post')) {
+        viewPostOffset += 25;
     }
 }
 
