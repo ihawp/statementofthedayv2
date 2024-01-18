@@ -71,7 +71,7 @@ a:hover {
     font-size: 1em;
 }
 
-section, header, nav, #loadMoreButtonDiv, footer {
+section, header, nav, #loadMoreButtonDivVIEWPOST, #loadMoreButtonDiv, footer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -85,7 +85,7 @@ footer {
     justify-content: center;
     align-items: center;
 }
-#loadMoreButtonDiv {
+#loadMoreButtonDiv, #loadMoreButtonDivVIEWPOST {
     width: 90%;
     padding: 3% 5%;
     margin-bottom: 15px;
@@ -95,7 +95,7 @@ footer {
     justify-content: center;
     align-items: center;
 }
-#loadMoreButtonDiv a {
+#loadMoreButtonDiv a, #loadMoreButtonDivVIEWPOST a {
     font-size: 3.67em;
 }
 #loadMoreButtonDiv p {
@@ -267,8 +267,9 @@ textarea:focus {
     background-color: var(--two);
     border-radius: 4px;
     resize: none;
+
     width: 600px;
-    height: 160px;
+    height: 173px;
     padding: 19px;
 
     overflow-y: scroll;
@@ -329,10 +330,11 @@ textarea:focus {
 
 
 /* alert system*/
+@media screen and (min-width: 1px) {
 .alert {
     background-color: blue;
     width: 100%;
-    min-height: 75px;
+    min-height: 60px;
 
     margin-top: 15px;
 
@@ -361,16 +363,23 @@ textarea:focus {
     position: fixed;
     overflow: hidden;
 
-    left: 15px;
-    bottom: 15px;
+    display: none;
 
-    width: 200px;
-    height: 60vh;
+    left: 0;
+    bottom: 0;
 
-    display: flex;
+    box-sizing: border-box;
+    width: 100vw;
+    height: 60px;
+    max-height: 40vh;
+
     align-items: start;
     justify-content: end;
     flex-direction: column;
+}
+}
+@media screen and (min-width: 962px) {
+
 }
 /* end of alert system */
 
@@ -402,7 +411,18 @@ textarea:focus {
     height: min-content;
     max-height: 80vh;
 
+    border-radius: 8px;
+
+    background-color: var(--one);
+
+    box-shadow: 0 0 10px rgb(0,0,0,0.43);
+
     box-sizing: border-box;
+}
+#viewPostSectionInnerPOSTPRINT, #viewPostSectionInnerAddon {
+    position: relative;
+    overflow: auto;
+    height: min-content;
 }
 
 .leaderboardNumber {
@@ -466,9 +486,13 @@ textarea:focus {
 }
 #addFilters, #filtersForm, #filtersFormCollected {
     flex-direction: column;
-    background-color: black;
 }
 
 #addPFPForm img {
     border: 0;
+}
+
+
+#viewPostInfoBox {
+    height: 200px;
 }
