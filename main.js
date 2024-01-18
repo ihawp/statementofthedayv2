@@ -34,9 +34,8 @@ function app() {
             } else {
                 usernamee = userInfo['namee'];
                 userIDD = userInfo['idd'];
-                pfpp = userInfo['pfpp'];
+                pfpp = 'userPFP/'+userInfo['pfpp'];
                 logged = true;
-                document.body.innerHTML += `${usernamee}, ${userIDD}`;
             }
 
             // pageInfo logic
@@ -110,7 +109,7 @@ function app() {
                             <nav>
                             <a id="leaderboardButton" onclick="printPage('leaderboard')"><i class="fa-solid fa-trophy"></i></a>                      
                             <a id="homeButton" onclick="printPage('home')"><i class="fa-solid fa-house"></i></a>                      
-                            <a id="profileButton" onclick="openProfile(userIDD)"><i class="fa-solid fa-user"></i></a>                      
+                            <a id="profileButton" onclick="openProfile(userIDD, event)"><i class="fa-solid fa-user"></i></a>                      
                             <a id="settingsButton" onclick="printPage('settings')"><i class="fa-solid fa-gear"></i></a>                      
 </nav>
 </header>  
@@ -153,10 +152,10 @@ function app() {
 </div>
 
 <div class="flex-row align-end">
-    <form id="addPFPForm" action="php/changePFP.php" method="POST">
-        <img src="${pfpp}" width="200px" height="200px">
-        <input type="file" name="file" id="file" accept=".png .jpg .jpeg">
-        <button type="submit" onclick="formSubmit(event, 'changePFP')">change pfp</button>
+    <form id="addPFPForm" action="php/changePFP.php" enctype="multipart/form-data" method="POST">
+        <img id="previewImage" loading="lazy" src="${pfpp}" width="125px" height="125px">
+        <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg" onchange="previewFile()">
+        <button type="submit" onclick="formSubmit(event, 'changePFP')">Change pfp</button>
     </form>
 </div>
 
@@ -176,9 +175,7 @@ function app() {
 
 <div id="addFilters">
     <h1>add filters</h1>
-    <div id="filtersFormCollectedErrorBox">
-    
-    </div>
+
     <form id="filtersForm">
         <input type="text" id="addFilterValue">
         <button type="submit" onclick="addFilters(event)">add filter</button>
@@ -255,7 +252,21 @@ function app() {
             console.error('Error:', error);
         });
 }
+function previewFile() {
+    var preview = document.getElementById('previewImage');
+    var fileInput = document.getElementById('file');
+    var file = fileInput.files[0];
 
+    if (file) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    }
+}
 // form logic for pausing and checking info before submitting
 function formSubmit(event, type) {
         const registerFormSubmission = document.getElementById('registerForm');
@@ -305,9 +316,7 @@ function deleteFilter(filter) {
                     userFilters = userFilters.slice(0, filter).concat(userFilters.slice(indexToRemove + 1));
                 }
 
-                document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
-                    <p>filter deleted successfully!</p>
-                `;
+                createAlert('Filter Deleted', 'red');
             }
         })
         .catch(error=>{
@@ -355,22 +364,16 @@ function addFilters(event) {
                     <button onclick="deleteFilter('${q}')">delete filter ${q}</button>
                 </div>
             `;
-                    document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
-            <p>filter successfully added</p>
-        `;
+                 createAlert('Filter Added', 'green');
                 } else {
-                    document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
-            <p>filter NOT added</p>
-        `;
+                    createAlert('Filter NOT Added', 'red');
                 }
             })
             .catch(error => {
                 console.log(error);
             })
     } else {
-        document.getElementById('filtersFormCollectedErrorBox').innerHTML = `
-            <p>filter already added</p>
-        `;
+        createAlert('Filter Already Added', 'yellow');
     }
 }
 
@@ -410,11 +413,16 @@ function ajaxGETData(url, data) {
 }
 
 // open page that requires info
-function openProfile(userID) {
+function openProfile(userID, event) {
+    if (event) {
+        event.stopPropagation();
+    }
     addToURL('user_id', userID);
     printPage('profile');
     document.getElementById('loadMoreButtonDiv').innerHTML += `
-                                <a onclick="loadPostsForProfile(${userID})"><i class="fa-solid fa-circle-chevron-down"></i></a>                            
+                                <a onclick="loadPostsForProfile(${userID})">
+                             
+</a>                            
 
     `;
 }
@@ -443,10 +451,14 @@ function openViewPost(postID) {
                                     <a id="postButton" type="submit" onclick="formSubmit(event, 'addComment')"><i class="fa-solid fa-paper-plane"></i></a>
                                 </form> 
             </div>
-                
-            </div>      
+           
+            <div id="viewPostSectionInnerPOSTPRINT">
+            </div>   
+                        <div id="loadMoreButtonDivVIEWPOST">
+      <a onclick="loadPostsForViewPost(${postID}, true)"><i class="fa-solid fa-circle-chevron-down"></i></a>
+</div>  
         </section>`;
-    loadPostsForViewPost(postID);
+    loadPostsForViewPost(postID, false);
     document.getElementById('viewPostSection').addEventListener('click', function(event) {
         if (event.target === this) {
             closeViewPostMenu();
@@ -584,6 +596,7 @@ function addALike(event, postID) {
 }
 let alertCount = 0;
 function createAlert(alert, colour) {
+    document.getElementById('alert-container').style.display = 'flex';
     document.getElementById('alert-container').innerHTML += `
                     <div class="alert" id="alert-box-${alertCount}">
                         <i class="fa-solid fa-exclamation"></i>
@@ -594,6 +607,8 @@ function createAlert(alert, colour) {
     let current = alertCount;
     setTimeout(function() {
         document.getElementById(`alert-box-${current}`).remove();
+        document.getElementById('alert-container').style.display = 'none';
+
     }, 3000);
     alertCount++;
 }
@@ -660,14 +675,14 @@ function loadPostsForProfile(profileID) {
             console.log(error);
         });
 }
-function loadPostsForViewPost(postID) {
+function loadPostsForViewPost(postID, loadMore) {
     let wow = {
         'offset': viewPostOffset,
         'post_id': postID
     }
     ajaxGETData('php/loadPostandComments.php', wow)
         .then(response=>{
-            printPostContentVIEWPOST(response, 'viewPostSectionInner');
+            printPostContentVIEWPOST(response, 'viewPostSectionInnerPOSTPRINT', loadMore);
         })
         .catch(error=>{
             console.log(error);
@@ -785,7 +800,7 @@ function printProfileContent(user_info, idOfPrint) {
     if (profileCount === 0) {
         document.getElementById(idOfPrint).innerHTML += `
         <section id="profileHeader">
-            <img alt="${user_info['username']}-pfp" src="${user_info['pfp']}">
+            <img draggable="false" alt="${user_info['username']}-pfp" loading="lazy" src="userPFP/${user_info['pfp']}">
             <h1>@${user_info['username']}</h1>
             <br>
             <br>
@@ -831,16 +846,11 @@ function printProfileContent(user_info, idOfPrint) {
 }
 function printPostContent(posts, idOfPrint) {
     if (posts.length === 0 && getParam('page') !== 'leaderboard') {
-        if (getParam('page') === 'post') {
-            document.getElementById('loadMoreButtonDiv').innerHTML = `
-                  <p>There are no more comments!</p>
-            `;
-        } else {
             document.getElementById('loadMoreButtonDiv').innerHTML = `
                   <p>There are no more posts!!</p>
             `;
         }
-    }
+
 
     for (let i = 0; i<posts.length; i++) {
         let p = posts[i];
@@ -849,8 +859,8 @@ function printPostContent(posts, idOfPrint) {
             <div class="post" id="post_id_${p['post_id']}" onclick="openViewPostInteract(${p['post_id']})">
                             <div class="paddingg">
                                                         <div class="flex-row align-bottom">
-                <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
-                <a class="profileLink" onclick="openProfile(event, ${p['user_id']})">@${p['username']}</a> 
+                <img class="postImg" alt="${p['username']}-pfp" loading="lazy" src="userPFP/${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']}, event)">
+                <a class="profileLink" onclick="openProfile(${p['user_id']}, event)">@${p['username']}</a> 
 </div>
                 <h2>${p['content']}</h2>
                 </div>
@@ -860,8 +870,6 @@ function printPostContent(posts, idOfPrint) {
                 <p id="${p['post_id']}_likes_count">${p['likes']}</p>         
                 <a><i class="fa-solid fa-comment"></i></a>
                 <p>${p['comments']}</p>         
-            <div class="postOverlay">
-            </div>
 </div>         
   
             `;
@@ -870,16 +878,6 @@ function printPostContent(posts, idOfPrint) {
                 <a onclick="openDeleteMenu(event, ${p['post_id']}, ${p['user_id']})"><i class="fa-solid fa-trash"></i></a>
                 <br>
             `
-        }
-
-        if (getParam('page') === 'leaderboard') {
-            document.getElementById('post_id_'+p['post_id']).innerHTML += `
-                <div class="leadboardNumber">
-                    <h1>
-                         ${i+1}           
-                    </h1>
-                </div>
-            `;
         }
     }
 
@@ -895,30 +893,25 @@ function printPostContent(posts, idOfPrint) {
 }
 
 
-function printPostContentVIEWPOST(posts, idOfPrint) {
-    if (posts.length === 0 && getParam('page') !== 'leaderboard') {
-        if (getParam('page') === 'post') {
-            document.getElementById('loadMoreButtonDiv').innerHTML = `
+function printPostContentVIEWPOST(posts, idOfPrint, loadMore) {
+    if (posts.length <= 24) {
+        if (getParam('viewing_post')) {
+            document.getElementById('loadMoreButtonDivVIEWPOST').innerHTML = `
                   <p>There are no more comments!</p>
-            `;
-        } else {
-            document.getElementById('loadMoreButtonDiv').innerHTML = `
-                  <p>There are no more posts!!</p>
             `;
         }
     }
 
     for (let i = 0; i<posts.length; i++) {
         let p = posts[i];
-
-        if (i === 0) {
+        if (i === 0 && loadMore === false) {
             document.getElementById('VPSMainPost').innerHTML += `
             <div class="post main-post" id="post_id_${p['post_id']}">
                                                         <div class="paddingg">
 
                             <div class="flex-row align-bottom">
-                <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
-                <a class="profileLink" onclick="openProfile(${p['user_id']})">@${p['username']}</a> 
+                <img class="postImg" alt="${p['username']}-pfp" loading="lazy" src="userPFP/${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']}, event); closeViewPostMenu()">
+                <a class="profileLink" onclick="openProfile(${p['user_id']}, event); closeViewPostMenu()">@${p['username']}</a> 
 </div>
                 <h2>${p['content']}</h2>
                 </div>
@@ -927,8 +920,6 @@ function printPostContentVIEWPOST(posts, idOfPrint) {
                 <p id="viewpost_${p['post_id']}_likes_count">${p['likes']}</p>         
                 <a><i class="fa-solid fa-comment"></i></a>
                 <p>${p['comments']}</p>         
-            <div class="postOverlay">
-            </div>
 </div>         
   
             `;
@@ -937,8 +928,8 @@ function printPostContentVIEWPOST(posts, idOfPrint) {
             <div class="post" id="post_id_${p['post_id']}" onclick="openViewPostInteract(${p['post_id']})">
                             <div class="paddingg">
                                                        <div class="flex-row align-bottom">
-                <img class="postImg" alt="${p['username']}-pfp" src="${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']})">
-                <a class="profileLink" onclick="openProfile(${p['user_id']})">@${p['username']}</a> 
+                <img class="postImg" alt="${p['username']}-pfp" loading="lazy" src="userPFP/${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']}, event); closeViewPostMenu()">
+                <a class="profileLink" onclick="openProfile(${p['user_id']}, event); closeViewPostMenu()">@${p['username']}</a> 
 </div>
                 <h2>${p['content']}</h2>
                 </div>
@@ -948,8 +939,6 @@ function printPostContentVIEWPOST(posts, idOfPrint) {
                 <p id="${p['post_id']}_likes_count">${p['likes']}</p>         
                 <a><i class="fa-solid fa-comment"></i></a>
                 <p>${p['comments']}</p>         
-            <div class="postOverlay">
-            </div>
 </div>         
   
             `;
