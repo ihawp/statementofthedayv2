@@ -14,8 +14,10 @@ if ($stmt->execute()) {
     $stmt->close();
     if ($r !== 0) {
         echo json_encode(['following'=>true]);
+        exit();
     } else {
         echo json_encode(['following'=>false]);
+        exit();
     }
 }
 

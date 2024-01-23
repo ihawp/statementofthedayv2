@@ -1,5 +1,7 @@
 <?php
 
+// must add loading medals
+
 include 'db_conn.php';
 session_start();
 
@@ -20,7 +22,7 @@ if ($stmt->execute()) {
     $offset = intval($_GET['offset']);
     $limit = intval($_GET['limit']);
     $data = array();
-    $sql = "SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp 
+    $sql = "SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp, a.medal_selection 
         FROM posts p
         LEFT JOIN accounts a ON p.user_id = a.id
         WHERE p.parent_post_id = 0 
@@ -41,23 +43,26 @@ if ($stmt->execute()) {
 
     // Call bind_param dynamically
     call_user_func_array([$stmt, 'bind_param'], $bindParams);
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $data[] = [
-                    'post_id' => $row['post_id'],
-                    'user_id' => $row['user_id'],
-                    'content' => $row['content'],
-                    'username' => $row['username'],
-                    'likes' => $row['likes'],
-                    'comments' => $row['comments'],
-                    'pfp' => $row['pfp'],
-                    'super_parent_post_id' => $row['super_parent_post_id']
-                ];
-            }
-            echo json_encode($data);
-        } else {
-            echo "Error executing statement";
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $medalSelection = json_decode($row['medal_selection']);
+
+            $data[] = [
+                'post_id'=>$row['post_id'],
+                'user_id'=>$row['user_id'],
+                'content'=>$row['content'],
+                'username'=>$row['username'],
+                'likes'=>$row['likes'],
+                'comments'=>$row['comments'],
+                'pfp'=>$row['pfp'],
+                'super_parent_post_id'=>$row['super_parent_post_id'],
+                'medal_selection'=>$medalSelection
+            ];
         }
-        $stmt->close();
+        echo json_encode($data);
+    } else {
+        echo "Error executing statement";
+    }
+    $stmt->close();
 }

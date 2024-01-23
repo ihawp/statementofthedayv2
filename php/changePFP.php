@@ -3,7 +3,6 @@
 include 'db_conn.php';
 session_start();
 
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Check if the file was uploaded without errors
     if (isset($_FILES["file"]) && $_FILES["file"]["error"] == 0) {
@@ -19,8 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $targetDir = "../userPFP/";
 
         // Delete the current pfp file from the directory
-        if (!empty($currentPFP) && file_exists($targetDir . $currentPFP)) {
-            unlink($targetDir . $currentPFP);
+        if (!empty($currentPFP) && file_exists($targetDir . $currentPFP) && $currentPFP !== 'default.png') {
+             unlink($targetDir . $currentPFP);
         }
 
         // Generate a unique name for the uploaded file
@@ -42,18 +41,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $l = intval($_SESSION['user_id']);
                 $stmt->bind_param('si', $newImageName, $l);
                 if ($stmt->execute()) {
-                    $_SESSION['pfp']=$newImageName;
+                    $_SESSION['pfp'] = $newImageName;
                     header('Location: ../index.html?page=settings');
+                    exit();
                 } else {
-                    echo 'nope';
+                    header('Location: ../index.html?page=settings');
+                    exit();
                 }
             } else {
-                echo "Error uploading the file.";
+                header('Location: ../index.html?page=settings');
+                exit();
             }
         } else {
-            echo "Invalid file type. Only PNG, JPG, and JPEG files are allowed.";
+            header('Location: ../index.html?page=settings');
+            exit();
         }
     } else {
-        echo "Error: " . $_FILES["file"]["error"];
+        header('Location: ../index.html?page=settings');
+        exit();
     }
+} else {
+    header('Location: ../index.html?page=settings');
+    exit();
 }
