@@ -1,7 +1,6 @@
 <?php
 
 // must add loading medals
-
 include 'db_conn.php';
 
 // Set the timezone to Saskatoon (-6 hours from UTC)
@@ -11,19 +10,18 @@ $conn->query("SET time_zone = '-06:00'");
 $currentDate = new DateTime('now', new DateTimeZone('-06:00'));
 $currentDateStr = $currentDate->format('Y-m-d');
 
-// Set the start and end time for the range (midnight to 5pm)
-$startTime = $currentDateStr . ' 00:00:00';
-$endTime = $currentDateStr . ' 17:00:00';
+// Set the start and end time for the current month
+$startTime = $currentDate->format('Y-m-01 00:00:00');
+$endTime = $currentDate->format('Y-m-t 23:59:59');
 
-// Retrieve the top 10 actual posts with likes count, username, and timestamp in Saskatoon time within the range
+// Retrieve all posts from the current month
 $stmtTopPosts = $conn->prepare('SELECT p.post_id, p.super_parent_post_id, p.user_id, p.username, p.content, p.likes, p.comments, a.pfp, a.medal_selection, CONVERT_TZ(p.time_posted, "UTC", "-06:00") as saskatoon_timestamp 
                                FROM posts p
                                JOIN accounts a ON p.user_id = a.id
                                WHERE p.time_posted BETWEEN ? AND ?
                                  AND p.parent_post_id = 0
                                  AND p.super_parent_post_id = 0
-                               ORDER BY p.likes DESC
-                               LIMIT 10');
+                               ORDER BY p.likes DESC LIMIT 10');
 
 $stmtTopPosts->bind_param('ss', $startTime, $endTime);
 $stmtTopPosts->execute();
@@ -35,21 +33,21 @@ while ($row = $result->fetch_assoc()) {
     $medalSelection = json_decode($row['medal_selection']);
 
     $topPosts[] = [
-        'post_id'=>$row['post_id'],
-        'user_id'=>$row['user_id'],
-        'content'=>$row['content'],
-        'username'=>$row['username'],
-        'likes'=>$row['likes'],
-        'comments'=>$row['comments'],
-        'pfp'=>$row['pfp'],
-        'super_parent_post_id'=>$row['super_parent_post_id'],
-        'medal_selection'=>$medalSelection
+        'post_id' => $row['post_id'],
+        'user_id' => $row['user_id'],
+        'content' => $row['content'],
+        'username' => $row['username'],
+        'likes' => $row['likes'],
+        'comments' => $row['comments'],
+        'pfp' => $row['pfp'],
+        'super_parent_post_id' => $row['super_parent_post_id'],
+        'medal_selection' => $medalSelection
     ];
 }
 
 // Close the statement
 $stmtTopPosts->close();
 
-// Send the top 10 posts data as JSON to JavaScript
+// Send the posts data as JSON to JavaScript
 echo json_encode($topPosts);
 exit();

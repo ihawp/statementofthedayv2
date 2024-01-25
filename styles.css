@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-    --one: #a94e4e;
-    --two: #f7fff7;
+    --one: #6755b6;
+    --two: #f1f1f1;
     --three: #98FB98;
     --four: #F7CAC9;
     --five: #DAA520;
@@ -29,6 +29,28 @@
     background-color: rgb(0,0,0,0.5);
 }
 
+#openSettingsProfile {
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    font-size: 2em;
+
+    border: 1px rgb(0,0,0,0.2) solid;
+    border-radius: 150px;
+    padding: 7px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--two);
+    color: var(--one);
+}
+#openSettingsProfile:hover {
+    background-color: var(--one);
+    color: var(--two);
+}
 
 body {
     margin: 0;
@@ -140,6 +162,8 @@ nav a {
     padding: 18px 0;
     width: 210px;
 
+    position: relative;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -147,6 +171,24 @@ nav a {
     color: var(--two);
     background-color: var(--one);
     transition: all 0.1s ease;
+}
+#notificationRedDot {
+    display: none;
+    padding: 3px 7.5px;
+    border-radius: 150px;
+
+    background-color: red;
+    color: white;
+
+    position: absolute;
+
+    top: 15px;
+    left: 105px;
+}
+#updateNotificationCount {
+    font-size: 0.43em;
+    font-weight: 800;
+    margin: 0;
 }
 nav a:first-child {
     border-bottom-left-radius: 16px;
@@ -176,8 +218,10 @@ nav a:hover {
 
     box-shadow: 0 0 1.5px rgb(0,0,0,0.2);
 
+    background-color: rgb(0,0,0,0.02);
     margin-top: 4px;
 }
+
 .paddingg {
     padding: 0 0 0 8px;
 }
@@ -214,6 +258,7 @@ nav a:hover {
     border-radius: 0;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    cursor: default;
 }
 
 
@@ -260,11 +305,13 @@ nav a:hover {
 #profileHeader p {
     margin: 3px;
 }
+
 #profileHeader {
+    position: relative;
     margin-top: 25px;
     box-sizing: border-box;
     border-radius: 5px;
-    padding: 19px;
+    padding: 19px 0;
     width: 600px;
 
 }
@@ -422,7 +469,7 @@ input:focus {
 }
 
 
-#commentSection, #deleteSection, #viewPostSection, #viewFollowers {
+#commentSection, #deleteSection, #viewPostSection, #viewFollowers, #viewFollowing {
     width: 100vw;
     min-height: 100vh;
     height: auto;
@@ -433,10 +480,20 @@ input:focus {
     background-color: rgb(0,0,0,0.43);
     justify-content: center;
 }
-#viewPostSectionInner, #viewFollowersInner {
+.loadMore {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75em;
+}
+.loadMore p {
+    font-size: 1em;
+}
+#viewPostSectionInner, #viewFollowersInner, #viewFollowingInner {
     position: relative;
     overflow: auto;
-    height: min-content;
+    height: max-content;
     max-height: 80vh;
 
     border-radius: 8px;
@@ -446,9 +503,8 @@ input:focus {
     box-shadow: 0 0 10px rgb(0,0,0,0.43);
 
     box-sizing: border-box;
-}
-#viewFollowersInner {
-    min-height: 80vh;
+
+
 }
 #viewPostSectionInnerPOSTPRINT, #viewPostSectionInnerAddon {
     position: relative;
@@ -629,8 +685,30 @@ form {
 .filter {
     margin-top: 5px;
     margin-bottom: 5px;
+    padding: 10px 0 7.5px 5px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    border-top: 1px solid rgb(0,0,0,0.2);
+}
+.filter:first-child {
+    border: 0;
+    margin-top: 15px;
+}
+.filter p{
+    opacity: 0.9;
+    font-size: 1.3em;
+    width: 100%;
+    margin: 0;
+}
+.filter button {
+    width: 50px;
+    margin: 0;
+    margin-left: 30px;
+}
+.filter button i {
+    font-size: 1.2rem;
 }
 
 
@@ -763,13 +841,17 @@ form {
     overflow-y: scroll;
 }
 #width-60 {
+    width: 60%;
+    margin: 0;
     height: max-content;
-    width: 55%;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #width-40 {
+    width: 40%;
     height: max-content;
-    width: 45%;
     max-height: 300px;
     box-sizing: border-box;
 
@@ -797,11 +879,10 @@ button:hover {
 }
 
 #currentMedal {
+    margin: 0;
     width: 215px;
     height: 215px;
     border-radius: 5px;
-
-    margin: 0;
 
     font-size: 6em;
 
@@ -870,5 +951,6 @@ button:hover {
     background-color: #4caf50;
     color: #fff;
 }
+
 
 

@@ -1,16 +1,11 @@
 // ihawp 2024
 
-// var for app
 let logged = false;
 let usernamee = undefined;
 let userIDD = undefined;
 let pfpp = undefined;
 const d = new Date();
 let year = d.getFullYear();
-
-
-// offset global values for loading posts
-// will be updated in future (more vars)
 let postsOffset = 0;
 let profileOffset = 0;
 let postOffset = 0;
@@ -18,14 +13,11 @@ let viewPostOffset = 0;
 const postsLimit = 25;
 let followersOffset = 0;
 let followingOffset = 0;
-
-
+let notificationsOffet = 0;
 let userFilters = new Array();
 let medals = new Array();
 let selectedMedal = undefined;
 let profileCount = 0;
-
-// create array for
 let pageInfo = {
 }
 
@@ -115,8 +107,8 @@ function app() {
                             <nav>
                             <a id="leaderboardButton" onclick="printPage('leaderboard')"><i class="fa-solid fa-trophy"></i></a>                      
                             <a id="homeButton" onclick="printPage('home')"><i class="fa-solid fa-house"></i></a>                      
+                            <a id="notificationsButton" onclick="printPage('notifications')"><div id="notificationRedDot"><p id="updateNotificationCount">1</p></div><i class="fa-solid fa-bell"></i></a>                      
                             <a id="profileButton" onclick="openProfile(userIDD, event)"><i class="fa-solid fa-user"></i></a>                      
-                            <a id="settingsButton" onclick="printPage('settings')"><i class="fa-solid fa-gear"></i></a>                      
 </nav>
 </header>  
 <div id="fixedHeader"></div>
@@ -207,6 +199,16 @@ function app() {
                           
                 `
                     },
+                    'notifications': {
+                      'content': `
+                        <section id="notificationsSection">
+                        
+                        </section>
+                        <div id="loadMoreButtonDiv">
+                            <button onclick="loadNotifications()">load more</button>
+                        </div>
+                      `
+                    },
                     'leaderboard': {
                         'content': `
                           
@@ -224,12 +226,12 @@ function app() {
                     },
                     'leaderboardDay': {
                         'content': `
-                          
+                            <form>
+                                    <input type="date">
+                                    <button type="submit">submit</button>
+                                </form>                            
                             <section id="leaderboardPostsSection">
-                            
-                            
-                            
-                            <h1>Leaderboard</h1>
+
                             </section>
                             <div id="loadMoreButtonDiv">
                             <p>Want to make it on the leaderboard?</p>
@@ -394,7 +396,6 @@ function formSubmit(event, type) {
 
                 setTimeout(function() {
                     document.getElementById('makeAPostButton').disabled = false;
-
                     }, 5000);
 
                 let w = new FormData(makeAPostForm);
@@ -491,7 +492,101 @@ function formSubmit(event, type) {
                 break;
         }
 }
+function loadNotificationsButton() {
+    notificationsOffet = 0;
+    let domm = document.getElementById('notificationsSection');
+    domm.innerHTML = `
+    <style>
+    .notification {
+    width: 600px;
+    height: 43px;
 
+    background-color: rgb(0,0,0,0.43);
+}
+#notificationsSection {
+    margin-top: 25px;
+}
+    </style>
+    `;
+    loadNotifications();
+}
+function loadNotifications() {
+    document.getElementById('notificationRedDot').style.display = 'none';
+    let wow = {
+        'user_id': userIDD,
+        'offset': notificationsOffet
+    }
+    ajaxGETData('php/loadNotifications.php', wow)
+        .then(response=>{
+            printNotifications(response);
+            notificationsOffet += 25;
+        })
+        .catch(error=> {
+            console.log(error);
+        });
+}
+function printNotifications(notifications) {
+    let domm = document.getElementById('notificationsSection');
+    if (notifications.length === 0) {
+        document.getElementById('loadMoreButtonDiv').innerHTML = `
+            <p>No More Notifications.</p>
+        `;
+    }
+
+    for (let i =0; i<notifications.length;i++) {
+        let d = notifications[i];
+
+
+        if (d['viewed']===0) {
+            domm.innerHTML += `
+        <div class="notification">
+            ${d['noti_type']}
+            ${d['username']}
+            <p>this is the first time</p>
+        </div>
+        `;
+        } else {
+            domm.innerHTML += `
+        <div class="notification">
+            ${d['noti_type']}
+            ${d['username']}
+        </div>
+        `;
+        }
+
+
+        domm.innerHTML += `
+        <div class="notification">
+            ${d['noti_type']}
+            ${d['username']}
+        </div>
+        `;
+    }
+}
+function loadNotificationsCount() {
+    let wow = {
+        'user_id': userIDD
+    }
+    ajaxGETData('php/loadNotificationCount.php', wow)
+        .then(response=> {
+             if (response['count'] !== 0) {
+                document.getElementById('notificationRedDot').style.display = 'flex';
+
+                if (response['count'] > 99) {
+                    document.getElementById('updateNotificationCount').innerHTML = `
+                99+
+            `;
+                } else {
+                    document.getElementById('updateNotificationCount').innerHTML = `
+                ${response['count']}
+            `;
+                }
+            }
+        })
+        .catch(error=> {
+           console.log(error);
+        });
+}
 function deleteFilter(filter) {
     let wow = {
         'filter': filter
@@ -531,7 +626,7 @@ function printFiltersForSettings() {
         document.getElementById('filtersFormCollected').innerHTML += `
                 <div class="filter" id="${userFilters[i]}">
                     <p>${userFilters[i]}</p>
-                    <button onclick="deleteFilter('${userFilters[i]}')">delete filter '${userFilters[i]}'</button>
+                    <button onclick="deleteFilter('${userFilters[i]}')"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `;
     }
@@ -660,7 +755,7 @@ async function addFilters(event) {
                     document.getElementById('filtersFormCollected').innerHTML += `
                 <div class="filter" id="${q}">
                     <p>${q}</p>
-                    <button onclick="deleteFilter('${q}')">delete filter ${q}</button>
+                    <button onclick="deleteFilter('${q}')"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             `;
                  createAlert('Filter Added', 'green');
@@ -753,6 +848,9 @@ function openProfile(userID, event) {
         if (getParam('viewing_followers')) {
             closeViewFollowersOverlay();
         }
+        if (getParam('viewing_following')) {
+            closeViewFollowingOverlay();
+        }
     }
     addToURL('user_id', userID);
     printPage('profile');
@@ -760,16 +858,21 @@ function openProfile(userID, event) {
                                 <a onclick="loadPostsForProfile(${userID})"><i class="fa-solid fa-circle-chevron-down"></i></a>
     `;
 }
-function openViewFollowersOverlay() {
+function openViewFollowersOverlay(idd) {
     followersOffset = 0
     addToURL('viewing_followers', true);
 
 
     document.body.innerHTML += `
-        <section id="viewFollowers">
+<section id="viewFollowers">
             <div id="viewFollowersInner">
-            </div>
-        </section>
+                <div id="loadFollowers">
+                
+                </div>
+                            <div class="loadMore" id="loadMoreFollowers">
+            <a onclick="loadFollowers(${idd})"><i class="fa-solid fa-circle-chevron-down"></i></a>
+</div>
+</section>
     `;
 
     document.getElementById('viewFollowers').addEventListener('click', function(event) {
@@ -786,15 +889,21 @@ function loadFollowers(user_id) {
     }
     ajaxGETData('php/loadFollowers.php', wow)
         .then(response=>{
-            printFollowers(response);
+            if (response.length !== 0) {
+                printFollowers(response);
+            } else {
+                document.getElementById('loadMoreFollowers').innerHTML = `
+            <p>No More Accounts.</p>
+        `;
+            }
         })
         .catch(error=>{
            console.log(error);
         });
-    followersOffset += 25;
 }
 function printFollowers(followers) {
-    let w = document.getElementById('viewFollowersInner');
+    followersOffset += followers.length;
+    let w = document.getElementById('loadFollowers');
     for (let i = 0; i < followers.length; i++) {
 
 
@@ -832,54 +941,64 @@ function closeViewFollowersOverlay() {
     removeFromURL('viewing_followers');
     document.getElementById('viewFollowers').remove();
 }
-function openViewFollowingOverlay() {
+function openViewFollowingOverlay(idd) {
     followingOffset = 0
     addToURL('viewing_following', true);
 
 
     document.body.innerHTML += `
         <section id="viewFollowing">
-            <div id="viewFollowersInner">
+            <div id="viewFollowingInner">
+                <div id="loadFollowing">
+                
+                </div>
+                            <div class="loadMore" id="loadMoreFollowing">
+            <a onclick="loadFollowing(${idd})"><i class="fa-solid fa-circle-chevron-down"></i></a>
+</div>
             </div>
         </section>
     `;
 
-    document.getElementById('viewFollowers').addEventListener('click', function(event) {
-        if (event.target === document.getElementById('viewFollowers')) {
-            closeViewFollowersOverlay();
+    document.getElementById('viewFollowing').addEventListener('click', function(event) {
+        if (event.target === document.getElementById('viewFollowing')) {
+            closeViewFollowingOverlay();
         }
     });
-    loadFollowers(getParam('user_id'))
+    loadFollowing(getParam('user_id'))
 }
 function loadFollowing(user_id) {
     let wow = {
         'user_id': user_id,
-        'offset': followersOffset
+        'offset': followingOffset
     }
-    ajaxGETData('php/loadFollowers.php', wow)
+    ajaxGETData('php/loadFollowing.php', wow)
         .then(response=>{
-            printFollowers(response);
+            if (response.length !== 0) {
+                printFollowing(response);
+            } else {
+                document.getElementById('loadMoreFollowing').innerHTML = `
+            <p>No More Accounts.</p>
+        `;
+            }
         })
         .catch(error=>{
             console.log(error);
         });
-    followersOffset += 25;
 }
 function printFollowing(followers) {
-    let w = document.getElementById('viewFollowersInner');
+    followingOffset += followers.length;
+    let w = document.getElementById('loadFollowing');
     for (let i = 0; i < followers.length; i++) {
 
 
         w.innerHTML += `
-            <div id="follower-${i}" onclick="openProfile(${followers[i]['id']}, event)" class='nice-box view-followers'>
+            <div id="following-${i}" onclick="openProfile(${followers[i]['id']}, event)" class='nice-box view-followers'>
                 <img loading="lazy" src="userPFP/${followers[i]['pfp']}">
                 <p>${followers[i]['username']}</p>
-                <button id="followers-button-${i}" onclick="addFollowEvent(event, ${userIDD}, ${followers[i]['id']}, 'followers-button-${i}')"></button>
+                <button id="following-button-${i}" onclick="addFollowEvent(event, ${userIDD}, ${followers[i]['id']}, 'following-button-${i}')"></button>
             </div>
         `;
-
         if (userIDD !== followers[i]['id']) {
-
             let wow = {
                 'followed_id': followers[i]['id'],
                 'follower_id': userIDD
@@ -887,22 +1006,22 @@ function printFollowing(followers) {
             ajaxGETData('php/checkFollow.php', wow)
                 .then(response=>{
                     if (response['following'] === false){
-                        document.getElementById(`followers-button-${i}`).innerHTML = `<i class="fa-solid fa-user-plus"></i>Follow`;
+                        document.getElementById(`following-button-${i}`).innerHTML = `<i class="fa-solid fa-user-plus"></i>Follow`;
                     } else {
-                        document.getElementById(`followers-button-${i}`).innerHTML = `<i class="fa-solid fa-user-minus"></i>Unfollow`;
+                        document.getElementById(`following-button-${i}`).innerHTML = `<i class="fa-solid fa-user-minus"></i>Unfollow`;
                     }
                 })
                 .catch(error=>{
                     console.log(error);
                 });
         } else {
-            document.getElementById(`followers-button-${i}`).remove();
+            document.getElementById(`following-button-${i}`).remove();
         }
     }
 }
 function closeViewFollowingOverlay() {
-    removeFromURL('viewing_followers');
-    document.getElementById('viewFollowers').remove();
+    removeFromURL('viewing_following');
+    document.getElementById('viewFollowing').remove();
 }
 function openViewPostInteract(postID) {
     if (getParam('viewing_post')) {
@@ -936,9 +1055,10 @@ function openViewPost(postID) {
            
             <div id="viewPostSectionInnerPOSTPRINT">
             </div>   
-                        <div id="loadMoreButtonDivVIEWPOST">
+            <div id="loadMoreButtonDivVIEWPOST">
       <a onclick="loadPostsForViewPost(${postID}, true)"><i class="fa-solid fa-circle-chevron-down"></i></a>
 </div>  
+</div>
         </section>`;
     loadPostsForViewPost(postID, false);
     document.getElementById('viewPostSection').addEventListener('click', function(event) {
@@ -1255,7 +1375,6 @@ async function loadPostsForLeaderboard() {
 function loadPostsForLeaderboardDay() {
     useAJAXGetData('php/loadPostsForLeaderboardDay.php')
         .then(posts => {
-            console.log(posts);
             printPostContent(posts, 'leaderboardPostsSection');
         })
         .catch(error => {
@@ -1287,7 +1406,9 @@ function loadPostsForLeaderboardYearly() {
 function printPage(page) {
     changeURL(page);
     document.title = `${page} | Statement Of The Day`;
-
+    if (page !== 'notifications') {
+        loadNotificationsCount();
+    }
     document.body.innerHTML =
             pageInfo['header']['content']+
             pageInfo[page]['content']+
@@ -1304,6 +1425,9 @@ function printPage(page) {
     if (getParam('viewing_followers')) {
         openViewFollowersOverlay();
     }
+    if (getParam('viewing_following')) {
+        openViewFollowingOverlay();
+    }
         if (page === 'home' || page ==='viewFollowingPosts' || page === 'viewFilteredPosts') {
             document.getElementById('printPostsSectionn').innerHTML += `
                                         <section>
@@ -1318,72 +1442,90 @@ function printPage(page) {
                             
                             <div id="home-post-buttons">
       <a id="viewHome" onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
-                                    <a id="viewFollowing" onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
+                                    <a id="viewFollowingg" onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
                                     <a id="viewFiltered" onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>                      
 </div>
             `;
 
             let w = document.getElementById('homeButton');
-            w.style.backgroundColor = '#f7fff7';
-            w.style.color = '#a94e4e';
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color = 'var(--one)';
         }
         if (page === 'home') {
             loadPostsForHome();
             let w= document.getElementById('viewHome').style;
-            w.color = '#a94e4e';
-            w.backgroundColor = '#f7fff7';
+            w.color = 'var(--one)';
+            w.backgroundColor = 'var(--two)';
         }
         if (page === 'viewFollowingPosts') {
             loadPostsForFollowing();
-            let w= document.getElementById('viewFollowing').style;
-            w.color = '#a94e4e';
-            w.backgroundColor = '#f7fff7';
+            let w= document.getElementById('viewFollowingg').style;
+            w.color = 'var(--one)';
+            w.backgroundColor = 'var(--two)';
         }
         if (page === 'viewFilteredPosts') {
             loadPostsForFiltering();
             let w= document.getElementById('viewFiltered').style;
-            w.color = '#a94e4e';
-            w.backgroundColor = '#f7fff7';
+            w.color = 'var(--one)';
+            w.backgroundColor = 'var(--two)';
         }
         if (page === 'leaderboard' || page === 'leaderboardDay' || page === 'leaderboardMonth' || page==='leaderboardYear') {
             document.getElementById('leaderboardPostsSection').innerHTML = `
                             <div id="leaderboardButtons">
-                                <a onclick="printPage('leaderboard')">Current</a>                            
-                                <a onclick="printPage('leaderboardMonth')">Monthly</a>
-                                <a onclick="printPage('leaderboardYear')">Yearly</a>
-                                <a onclick="printPage('leaderboardDay')">History</a>
+                                <a id="leaderboardCurrentButton" onclick="printPage('leaderboard')">Current</a>                            
+                                <a id="leaderboardMonthlyButton" onclick="printPage('leaderboardMonth')">Monthly</a>
+                                <a id="leaderboardYearlyButton" onclick="printPage('leaderboardYear')">Yearly</a>
+                                <a id="leaderboardDayButton" onclick="printPage('leaderboardDay')">History</a>
                             </div>
             `;
 
             let w = document.getElementById('leaderboardButton');
-            w.style.backgroundColor = '#f7fff7';
-            w.style.color = '#a94e4e'
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color = 'var(--one)';
         }
         if (page === 'leaderboard') {
             loadPostsForLeaderboard();
+
+            let w = document.getElementById('leaderboardCurrentButton');
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color =  'var(--one)';
         }
         if (page === 'leaderboardDay') {
             loadPostsForLeaderboardDay();
+            let w = document.getElementById('leaderboardDayButton');
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color =  'var(--one)';
         }
         if (page === 'leaderboardMonth') {
+            let w = document.getElementById('leaderboardMonthlyButton');
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color =  'var(--one)';
             loadPostsForLeaderboardMonthly();
         }
         if (page === 'leaderboardYear') {
+            let w = document.getElementById('leaderboardYearlyButton');
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color =  'var(--one)';
             loadPostsForLeaderboardYearly();
         }
         if (page === 'settings') {
             loadMedalsForSettings();
             printFiltersForSettings();
-            let w = document.getElementById('settingsButton');
-            w.style.backgroundColor = '#f7fff7';
-            w.style.color = '#a94e4e'
+        }
+        if (page === 'notifications') {
+            loadNotificationsButton();
+            let w = document.getElementById('notificationsButton');
+            w.style.backgroundColor = 'var(--two)';
+            w.style.color = 'var(--one)';
         }
         if (page === 'profile') {
             loadPostsForProfile(getParam('user_id'));
 
-            let w = document.getElementById('profileButton');
-            w.style.backgroundColor = '#f7fff7';
-            w.style.color = '#a94e4e'
+            if (getParam('user_id')==userIDD) {
+                let w = document.getElementById('profileButton');
+                w.style.backgroundColor = 'var(--two)';
+                w.style.color = 'var(--one)';
+            }
         }
 }
 
@@ -1392,22 +1534,18 @@ function printProfileContent(user_info, idOfPrint) {
 
         document.getElementById(idOfPrint).innerHTML += `
         <section id="profileHeader">
-            <div class="">
-                
-            </div>
             <img draggable="false" alt="${user_info['username']}-pfp" loading="lazy" src="userPFP/${user_info['pfp']}">
             <div id="profileUsername">
                  <h1>@${user_info['username']}</h1>
-
             </div>
             <br>
             <br>
             <div class="flex-row">
-                <a class="flex-row">
+                <a class="flex-row" onclick="openViewFollowingOverlay(${user_info['id']})">
                     <p id="followingLabel">Following: </p>
                     <p id="followingCount">${user_info['following_count']}</p>
                 </a>
-                <a class="flex-row" onclick="openViewFollowersOverlay()">
+                <a class="flex-row" onclick="openViewFollowersOverlay(${user_info['id']})">
                     <p id="followersLabel">Followers:</p>
                     <p id="followCount">${user_info['follow_count']}</p>
                 </a>
@@ -1420,8 +1558,8 @@ function printProfileContent(user_info, idOfPrint) {
         if (user_info['medal_selection'] !== null) {
             let w = document.getElementById('profileUsername');
             w.innerHTML += `
-                <a id="profileMedal" class="addMedal" onclick="openViewPost(${user_info['medal_selection'][1]})"><i class="fa-solid fa-award"></i></a>
-            `;
+                <a id="profileMedal" class="addMedal" onclick="openViewPost(${user_info['medal_selection'][1]})"><i class="fa-solid fa-award"></i></a>            
+`;
             let profileMedal = document.getElementById('profileMedal');
             profileMedal.style.color = 'var(--one)';
             if (user_info['medal_selection'][3] === 1) {
@@ -1456,6 +1594,11 @@ function printProfileContent(user_info, idOfPrint) {
                 .catch(error=>{
                     console.log(error);
                 });
+        } else {
+            document.getElementById('profileHeader').innerHTML += `
+                        <a id="openSettingsProfile" onclick="printPage('settings')"><i class="fa-solid fa-gear"></i></a>
+
+            `;
         }
         profileCount += 1;
     }
@@ -1633,3 +1776,6 @@ function printPostContentVIEWPOST(posts, idOfPrint, loadMore) {
 
 // start app
 app();
+setTimeout(function() {
+    setInterval(loadNotificationsCount, 10000);
+}, 5000);

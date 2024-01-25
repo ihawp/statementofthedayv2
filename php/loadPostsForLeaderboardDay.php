@@ -1,5 +1,6 @@
 <?php
 
+
 // must add loading medals
 
 include 'db_conn.php';
@@ -35,15 +36,15 @@ while ($row = $result->fetch_assoc()) {
     $medalSelection = json_decode($row['medal_selection']);
 
     $topPosts[] = [
-        'post_id'=>$row['post_id'],
-        'user_id'=>$row['user_id'],
-        'content'=>$row['content'],
-        'username'=>$row['username'],
-        'likes'=>$row['likes'],
-        'comments'=>$row['comments'],
-        'pfp'=>$row['pfp'],
-        'super_parent_post_id'=>$row['super_parent_post_id'],
-        'medal_selection'=>$medalSelection
+        'post_id' => $row['post_id'],
+        'user_id' => $row['user_id'],
+        'content' => $row['content'],
+        'username' => $row['username'],
+        'likes' => $row['likes'],
+        'comments' => $row['comments'],
+        'pfp' => $row['pfp'],
+        'super_parent_post_id' => $row['super_parent_post_id'],
+        'medal_selection' => $medalSelection
     ];
 }
 

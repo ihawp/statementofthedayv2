@@ -7,6 +7,7 @@ session_start();
 $userID = $_SESSION['user_id'];
 $uploadUserID = $_GET['following'];
 $toBeFollowedID = $_GET['followed'];
+$typeParam = 'follow';
 
 // not logged in case
 if ($userID === null) {
@@ -38,7 +39,15 @@ if ($uploadUserID == intval($_SESSION['user_id'])) {
                 $follow_count_stmt->bind_param('i', $toBeFollowedID);
 
                 if ($following_count_stmt->execute() && $follow_count_stmt->execute()) {
-                    echo json_encode(['following' => true]);
+
+                    $follow_count_stmt->close();
+                    $following_count_stmt->close();
+
+                    $stmt=$conn->prepare('');
+                    $stmt->bind_param('',);
+                    if ($stmt->execute()) {
+                        echo json_encode(['following' => true]);
+                    }
                 } else {
                     echo json_encode(['following' => false]);
                 }
