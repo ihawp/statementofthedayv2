@@ -485,6 +485,7 @@ function formSubmit(event, type) {
                             // change button to unblock
                             document.getElementById('blockButton').innerHTML = 'Unblock';
                             document.getElementById('profilePostsSection').remove();
+                            document.getElementById('loadMoreButtonDiv').remove();
                         }
                         if (response['stmt']==='unblocked') {
                             createAlert('User Unblocked', 'green');
@@ -1654,6 +1655,7 @@ function printProfileContent(user_info, posts, idOfPrint) {
                 .then(response=> {
                   if (response['blocked'] === true) {
                       document.getElementById('blockButton').innerText = 'Unblock';
+                      document.getElementById('loadMoreButtonDiv').remove();
                   } else {
                       document.getElementById('blockButton').innerHTML = `<i class="fa-solid fa-ban"></i> Block`;
                       printPostContent(posts, 'profilePostsSection');
