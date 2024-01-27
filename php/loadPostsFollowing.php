@@ -60,6 +60,26 @@ if ($stmt->execute()) {
                 'medal_selection'=>$medalSelection
             ];
         }
+
+
+        $stmt->close();
+
+        $stmt = $conn->prepare('SELECT filters FROM accounts WHERE id = ?');
+        $userID = intval($_SESSION['user_id']);
+        $stmt->bind_param('i',$userID);
+        $filters = null;
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $filters = stripslashes($row['filters']);
+        }
+        // Iterate through each post and replace bad words
+        foreach ($data as &$post) {
+            $badWords = json_decode($filters);
+            foreach ($badWords as $badWord) {
+                $post['content'] = str_ireplace(htmlspecialchars($badWord), '***', $post['content']);
+            }
+        }
         echo json_encode($data);
     } else {
         echo "Error executing statement";

@@ -25,6 +25,7 @@ if ($stmt->execute()) {
         $data[] = [
             'id'=>$row['id'],
             'user_id'=>$row['user_id'],
+            'post_id'=>$row['post_id'],
             'username'=>$row['username'],
             'noti_type'=>$row['noti_type'],
             'viewed'=>$row['viewed'],

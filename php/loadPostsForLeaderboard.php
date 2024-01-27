@@ -3,6 +3,7 @@
 // must add loading medals
 
 include 'db_conn.php';
+session_start();
 
 // Set the timezone to Saskatoon (-6 hours from UTC)
 $conn->query("SET time_zone = '-06:00'");
@@ -49,6 +50,22 @@ while ($row = $result->fetch_assoc()) {
 
 // Close the statement
 $stmtTopPosts->close();
+
+
+$stmt = $conn->prepare('SELECT filters FROM accounts WHERE id = ?');
+$userID = intval($_SESSION['user_id']);
+$stmt->bind_param('i',$userID);
+if ($stmt->execute()) {
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $filters = stripslashes($row['filters']);
+    foreach ($topPosts as &$post) {
+        $badWords = json_decode($filters);
+        foreach ($badWords as $badWord) {
+            $post['content'] = str_ireplace(htmlspecialchars($badWord), '***', $post['content']);
+        }
+    }
+}
 
 // Send the top 10 posts data as JSON to JavaScript
 echo json_encode($topPosts);

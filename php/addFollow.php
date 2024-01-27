@@ -4,16 +4,11 @@ include 'db_conn.php';
 session_start();
 
 
-$userID = $_SESSION['user_id'];
-$uploadUserID = $_GET['following'];
-$toBeFollowedID = $_GET['followed'];
+$userID = intval(htmlspecialchars($_SESSION['user_id']));
+$uploadUserID = intval(htmlspecialchars($_GET['following']));
+$toBeFollowedID = intval(htmlspecialchars($_GET['followed']));
+$postID = $toBeFollowedID;
 $typeParam = 'follow';
-
-// not logged in case
-if ($userID === null) {
-    header('Location: ../index.html?skidattle');
-    exit();
-}
 
 // check if they already follow the user
 // if so remove the follow
@@ -43,13 +38,30 @@ if ($uploadUserID == intval($_SESSION['user_id'])) {
                     $follow_count_stmt->close();
                     $following_count_stmt->close();
 
-                    $stmt=$conn->prepare('');
-                    $stmt->bind_param('',);
+                    // will need to person following username
+
+                    $stmt = $conn->prepare('SELECT username FROM accounts WHERE id = ? LIMIT 1');
+                    $stmt->bind_param('i', $userID);
                     if ($stmt->execute()) {
-                        echo json_encode(['following' => true]);
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $followingUsername = $row['username'];
                     }
+                    $stmt->close();
+
+                    $stmt = $conn->prepare('INSERT INTO notifications (username, user_id, post_id, noti_type, timestamp) VALUES (?, ?, ?,?, NOW(6))');
+                    $stmt->bind_param('siis',$followingUsername, $toBeFollowedID, $userID, $typeParam);
+                    if ($stmt->execute()) {
+                        $stmt->close();
+                        echo json_encode(['following' => true]);
+                        exit();
+                    }
+                    // and user_id of user being followed
+                    // along with timestamp
+
                 } else {
                     echo json_encode(['following' => false]);
+                    exit();
                 }
             }
         } else {
@@ -64,7 +76,23 @@ if ($uploadUserID == intval($_SESSION['user_id'])) {
                 $follow_count_stmt->bind_param('i', $toBeFollowedID);
 
                 if ($following_count_stmt->execute() && $follow_count_stmt->execute()) {
-                    echo json_encode(['unfollowed' => true]);
+
+
+                    // get username
+                    $stmt = $conn->prepare('SELECT username FROM accounts WHERE id = ? LIMIT 1');
+                    $stmt->bind_param('i', $userID);
+                    if ($stmt->execute()) {
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $followingUsername = $row['username'];
+                    }
+                    $stmt->close();
+
+                    $stmt = $conn->prepare('DELETE FROM notifications WHERE user_id = ? AND noti_type = ? AND username = ?');
+                    $stmt->bind_param('iss',$toBeFollowedID, $typeParam, $followingUsername);
+                    if ($stmt->execute()) {
+                        echo json_encode(['unfollowed' => true]);
+                    }
                 } else {
                     echo json_encode(['unfollowed' => false]);
                 }

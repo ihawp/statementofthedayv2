@@ -3,7 +3,11 @@
 include 'db_conn.php';
 session_start();
 
-if (htmlspecialchars($_GET['content']) === '') {
+if (htmlspecialchars($_GET['content'])==='') {
+    echo json_encode(['stmt'=>false]);
+    exit();
+}
+if (htmlspecialchars($_GET['content'])[0] === ' ') {
     echo json_encode(['stmt'=>false]);
     exit();
 }

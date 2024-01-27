@@ -4,6 +4,7 @@ include 'db_conn.php';
 session_start();
 
 $parentID = htmlspecialchars($_POST['post_id']);
+$usernamee = htmlspecialchars($_SESSION['username']);
 $userID = htmlspecialchars($_SESSION['user_id']);
 $commentContent = htmlspecialchars($_POST['commentContent']);
 
@@ -35,11 +36,45 @@ $stmtUpdateCommentCount->bind_param('i', $parentID);
 
 if ($stmtInsertComment->execute()) {
     // Increment the comment count
+    $stmtInsertComment->close();
     $stmtUpdateCommentCount->execute();
+    $stmtUpdateCommentCount->close();
 
-    // Redirect to the post page
-    header('Location: ../index.html?page=home&post_id=' . $parentID.'&viewing_post=true');
-    exit();
+
+    // use post ID to get username for noti
+    $stmt=$conn->prepare('SELECT user_id FROM posts WHERE post_id = ?');
+    $stmt->bind_param('i',$parentID);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $userIDD = $row['user_id'];
+
+        // use username for notification statemetn
+
+        $stmt->close();
+
+        $stmt = $conn->prepare('SELECT post_id FROM posts WHERE user_id = ? ORDER BY time_posted DESC LIMIT 1');
+        $stmt->bind_param('i', $userID);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            $properID = $row['post_id'];
+            $stmt->close();
+
+            if ($userIDD !== $_SESSION['user_id']) {
+                $stmt=$conn->prepare('INSERT INTO notifications (user_id, post_id, username, noti_type, timestamp) VALUES (?,?,?,?,NOW(6))');
+                $type = 'comment';
+                $stmt->bind_param('iiss', $userIDD, $properID, $usernamee, $type);
+                if ($stmt->execute()) {
+                    header('Location: ../index.html?page=home&post_id=' . $parentID.'&viewing_post=true');
+                    exit();
+                }
+            } else {
+                header('Location: ../index.html?page=home&post_id=' . $parentID.'&viewing_post=true');
+                exit();
+            }
+        }
+    }
 } else {
     header('Location: ../index.html?page=home');
     exit();

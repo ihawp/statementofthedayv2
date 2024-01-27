@@ -147,26 +147,30 @@ function app() {
                         'content': `
 <section>
 <div id="settingsSection">
-<div class="nice-box">
+<div class="nice-box settings-first align-end">
 
-        <form id="addPFPForm" class="flex-row align-end" method="POST" action="php/changePFP.php" enctype="multipart/form-data">
+        <form id="addPFPForm" class="flex-row align-center" method="POST" action="php/changePFP.php" enctype="multipart/form-data">
+            <h1>Profile Picture</h1>
+            <div class="flex-column">
             <div class="pfpImageOverlay">
                 <img id="previewImage" class="settingsPFP" loading="lazy" src="${pfpp}" width="125px" height="125px">
                 <div class="addPFPOverlay">
-                    <h1>add pfp</h1>
+                    <i class="fa-solid fa-camera"></i>
                     <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg" onchange="previewFile()">
                 </div>
             </div>
-            <button type="submit" onclick="formSubmit(event, 'changePFP')">Submit</button>
+            <button class="margin-top-10" type="submit" onclick="formSubmit(event, 'changePFP')">Submit</button>
+
+            </div>
         </form>
 
-<form id="usernameForm">
-    <label for="usernameeee">Username:</label>
+<form id="usernameForm" class="flex-row align-center justify-center">
+    <h1 for="usernameeee">Username</h1>
     <input id="usernameeee" value="${usernamee}" disabled>
 </form>
-<form id="passwordForm">
-    <label for="newPassword">Change Password:</label>
-    <input id="newPassword" placeholder="New Password" maxlength="25">
+<form id="passwordForm" method="POST" action="php/changePassword.php" class="flex-row align-center justify-center">
+    <h1 for="newPassword">Change Password</h1>
+    <input id="newPassword" type="password" placeholder="New Password" name="password" maxlength="25">
     <button type="submit">Submit</button>
 </form>
 <a id="logout" href="php/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
@@ -184,12 +188,14 @@ function app() {
        </form>
 </div>
 <div id="addFilters" class="nice-box">
-    <h1>Filters</h1>
 
-    <form id="filtersForm">
-        <input type="text" placeholder="Type Filter Here" id="addFilterValue">
+    <form id="filtersForm" class="flex-row justify-center align-center">
+        <h1>Filters</h1>
+        <div class="flex-row">
+       <input type="text" placeholder="Type Filter Here" id="addFilterValue">
         <button type="submit" onclick="addFilters(event)"><i class="fa-solid fa-plus"></i>Add</button>
-    </form>
+</div>
+       </form>
     <div id="filtersFormCollected">
     
     </div>
@@ -205,7 +211,7 @@ function app() {
                         
                         </section>
                         <div id="loadMoreButtonDiv">
-                            <button onclick="loadNotifications()">load more</button>
+                            <a onclick="loadNotifications()"><i class="fa-solid fa-circle-chevron-down"></i></a>
                         </div>
                       `
                     },
@@ -217,21 +223,6 @@ function app() {
                            
                             
                             <h1>Leaderboard</h1>
-                            </section>
-                            <div id="loadMoreButtonDiv">
-                            <p>Want to make it on the leaderboard?</p>
-                            <p id="leaderboardHomeLink">Make a post<a onclick="printPage('home')">here.</a></p>
-</div>
-                        `
-                    },
-                    'leaderboardDay': {
-                        'content': `
-                            <form>
-                                    <input type="date">
-                                    <button type="submit">submit</button>
-                                </form>                            
-                            <section id="leaderboardPostsSection">
-
                             </section>
                             <div id="loadMoreButtonDiv">
                             <p>Want to make it on the leaderboard?</p>
@@ -271,6 +262,7 @@ function app() {
                     'profile': {
                         'content': `
                             <section id="profileSection"></section>
+                            <section id="profilePostsSection"></section>
                             <div id="loadMoreButtonDiv">
 </div>
                         `
@@ -290,19 +282,6 @@ function app() {
                     },
                     'comment': {
                         'wow':123
-                    },
-                    'viewFilteredPosts': {
-                        'content': `
-                            <section id="printPostsSectionn">
-                            
-                            </section>
-                            <section id="printPostsSection">
-                                
-                            </section>
-                            <div id="loadMoreButtonDiv">
-                            <a onclick="loadPostsForFiltering()"><i class="fa-solid fa-circle-chevron-down"></i></a>                            
-</div>
-                        `
                     }
                 }
             }
@@ -379,6 +358,7 @@ function formSubmit(event, type) {
         const makeAPostForm = document.getElementById("makeAPostForm");
         const addComment = document.getElementById("addCommentForm");
         const addPFP = document.getElementById("addPFPForm");
+        const blockFormm = document.getElementById('blockForm');
 
     event.preventDefault();
 
@@ -409,7 +389,8 @@ function formSubmit(event, type) {
                             createAlert('Post NOT Added.', 'yellow');
 
                         } else {
-                            createAlert('Post Added Successfully!', 'green')
+                            createAlert('Post Added Successfully!', 'green');
+                            document.getElementById('makeAPost').value = '';
                             if (document.getElementById('printPostsSection')) {
 
                                 document.getElementById('printPostsSection').insertAdjacentHTML('afterbegin', `
@@ -490,24 +471,35 @@ function formSubmit(event, type) {
                     createAlert('Please select an option before submitting.', 'red');
                 }
                 break;
+            case ('block'):
+                let leett = getParam('user_id');
+
+                let ban = {
+                    'user_id': leett
+                }
+
+                ajaxGETData('php/blockUser.php', ban)
+                    .then(response=> {
+                        if (response['stmt'] === 'blocked') {
+                            createAlert('User Blocked', 'red');
+                            // change button to unblock
+                            document.getElementById('blockButton').innerHTML = 'Unblock';
+                            document.getElementById('profilePostsSection').remove();
+                        }
+                        if (response['stmt']==='unblocked') {
+                            createAlert('User Unblocked', 'green');
+                            document.getElementById('blockButton').innerHTML = '<i class="fa-solid fa-ban"></i> Block';
+                            window.location.reload();
+                        }
+                    })
+                    .catch(error=> {
+                        console.log(error);
+                    })
+                break;
         }
 }
 function loadNotificationsButton() {
     notificationsOffet = 0;
-    let domm = document.getElementById('notificationsSection');
-    domm.innerHTML = `
-    <style>
-    .notification {
-    width: 600px;
-    height: 43px;
-
-    background-color: rgb(0,0,0,0.43);
-}
-#notificationsSection {
-    margin-top: 25px;
-}
-    </style>
-    `;
     loadNotifications();
 }
 function loadNotifications() {
@@ -538,29 +530,113 @@ function printNotifications(notifications) {
 
 
         if (d['viewed']===0) {
-            domm.innerHTML += `
-        <div class="notification">
-            ${d['noti_type']}
-            ${d['username']}
-            <p>this is the first time</p>
-        </div>
-        `;
+            if (d['noti_type'] === 'like' || d['noti_type'] === 'comment' || d['noti_type'] === 'medal') {
+                domm.innerHTML += `
+                    <div id="notification-${d['id']}" onclick="openViewPostEvent(event, ${d['post_id']})" class="notification noti-first-time">
+                        
+                        <p id="noti-text-${d['id']}"></p>
+                        <div class="noti-right-box" id="noti-right-box-${d['id']}">
+                           
+                        </div>
+                    </div>
+                `;
+            } else if (d['noti_type'] === 'follow') {
+                domm.innerHTML += `
+                    <div id="notification-${d['id']}" onclick="openProfile(${d['post_id']})" class="notification noti-first-time">
+                        <p id="noti-text-${d['id']}"></p>
+                        <div class="noti-right-box" id="noti-right-box-${d['id']}">
+                           
+                        </div>
+                    </div>
+                `;
+            }
+            if (d['noti_type'] === 'like') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    <b>${d['username']}</b> liked your post!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-heart"></i>
+                `;
+            }
+            if (d['noti_type'] === 'follow') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    <b>${d['username']}</b> followed you!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-user-plus"></i>
+                `;
+            }
+            if (d['noti_type'] === 'comment') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    <b>${d['username']}</b> commented on your post!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-comment"></i>
+                `;
+            }
+            if (d['noti_type'] === 'medal') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    Congratulations <b>${d['username']}</b>, you got a medal!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-award"></i>
+                `;
+            }
         } else {
-            domm.innerHTML += `
-        <div class="notification">
-            ${d['noti_type']}
-            ${d['username']}
-        </div>
-        `;
+            if (d['noti_type'] === 'like' || d['noti_type'] === 'comment' || d['noti_type'] === 'medal') {
+                domm.innerHTML += `
+                    <div id="notification-${d['id']}" onclick="openViewPostEvent(event, ${d['post_id']})" class="notification">
+                        
+                        <p id="noti-text-${d['id']}"></p>
+                        <div class="noti-right-box" id="noti-right-box-${d['id']}">
+                           
+                        </div>
+                    </div>
+                `;
+            } else if (d['noti_type'] === 'follow') {
+                domm.innerHTML += `
+                    <div id="notification-${d['id']}" onclick="openProfile(${d['post_id']})" class="notification">
+                        <p id="noti-text-${d['id']}"></p>
+                        <div class="noti-right-box" id="noti-right-box-${d['id']}">
+                           
+                        </div>
+                    </div>
+                `;
+            }
+            if (d['noti_type'] === 'like') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    <b>${d['username']}</b> liked your post!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-heart"></i>
+                `;
+            }
+            if (d['noti_type'] === 'follow') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    <b>${d['username']}</b> followed you!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-user-plus"></i>
+                `;
+            }
+            if (d['noti_type'] === 'comment') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    <b>${d['username']}</b> commented on your post!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-comment"></i>
+                `;
+            }
+            if (d['noti_type'] === 'medal') {
+                document.getElementById(`noti-text-${d['id']}`).innerHTML = `
+                    Congratulations <b>${d['username']}</b>, you got a medal!
+                `;
+                document.getElementById(`noti-right-box-${d['id']}`).innerHTML = `
+                <i class="fa-solid fa-award"></i>
+                `;
+            }
         }
 
-
-        domm.innerHTML += `
-        <div class="notification">
-            ${d['noti_type']}
-            ${d['username']}
-        </div>
-        `;
     }
 }
 function loadNotificationsCount() {
@@ -650,6 +726,7 @@ function printMedals(medalss) {
     } else {
         if (selectedMedal !== null) {
             document.getElementById('width-40').innerHTML = `
+<h1>Selected Medal</h1>
             <a id="currentMedal" onclick="openViewPost(${selectedMedal[1]})"><i class="fa-solid fa-award"></i></a>
                         <button type="submit" onclick="formSubmit(event, 'changeMedal')">Submit</button>
         
@@ -845,13 +922,14 @@ function ajaxPostData(url, data) {
 function openProfile(userID, event) {
     if (event) {
         event.stopPropagation();
-        if (getParam('viewing_followers')) {
-            closeViewFollowersOverlay();
-        }
-        if (getParam('viewing_following')) {
-            closeViewFollowingOverlay();
-        }
     }
+    if (getParam('viewing_following')) {
+        closeViewFollowingOverlay();
+    }
+    if (getParam('viewing_followers')) {
+        closeViewFollowersOverlay();
+    }
+
     addToURL('user_id', userID);
     printPage('profile');
     document.getElementById('loadMoreButtonDiv').innerHTML += `
@@ -1101,11 +1179,7 @@ function openDeleteMenu(event, postID, userID, type, parentID) {
 
 // close overlay
 function closeDeleteMenu() {
-    if (getParam('viewing_post')) {
-        const save = getParam('post_id');
-        closeViewPostMenu();
-        openViewPost(save);
-    }
+
     document.getElementById('deleteSection').remove();
     removeFromURL('deleting');
 }
@@ -1245,7 +1319,12 @@ function createAlert(alert, colour) {
     document.getElementById(`alert-box-${alertCount}`).style.backgroundColor = colour;
     let current = alertCount;
     setTimeout(function() {
-        document.getElementById(`alert-box-${current}`).remove();
+        // will always try to remove and show error in console
+        // trycatch case prevent this by doing nothing when the
+        // error occurs
+        try {
+            document.getElementById(`alert-box-${current}`).remove();
+        } catch{}
         document.getElementById('alert-container').style.display = 'none';
     }, 2500);
     alertCount++;
@@ -1259,7 +1338,7 @@ function deletePost(postID, userID, typee, parentID) {
     }
     useAJAXGetData('php/removePost.php', wow)
         .then(response => {
-            if (response['post_deleted']) {
+            if (response['post_deleted'] === true) {
                 if (getParam('viewing_post')) {
 
                     if (document.getElementById(`post_id_${postID}_viewpost`)) {
@@ -1294,22 +1373,6 @@ function deletePost(postID, userID, typee, parentID) {
 }
 
 // load posts
-function loadPostsForFiltering() {
-    let wow = {
-        'offset': postsOffset,
-        'limit': postsLimit
-    }
-    useAJAXGetData('php/loadPostsFiltered.php', wow)
-        .then(posts => {
-            console.log(posts);
-            console.log('still need to add filtered posts');
-            console.log('------------');
-            printPostContent(posts, 'printPostsSection');
-        })
-        .catch(error => {
-            console.log('Error:', error);
-        });
-}
 function loadPostsForFollowing() {
     let wow = {
         'offset': postsOffset,
@@ -1330,8 +1393,7 @@ function loadPostsForProfile(profileID) {
     }
     ajaxGETData('php/loadProfile.php', wow)
         .then(response=>{
-            printProfileContent(response['user_info'], 'profileSection');
-            printPostContent(response['posts'], 'profileSection');
+            printProfileContent(response['user_info'], response['posts'], 'profilePostsSection');
         })
         .catch(error=>{
             console.log(error);
@@ -1365,15 +1427,6 @@ function loadPostsForHome() {
 }
 async function loadPostsForLeaderboard() {
     useAJAXGetData('php/loadPostsForLeaderboard.php')
-        .then(posts => {
-            printPostContent(posts, 'leaderboardPostsSection');
-        })
-        .catch(error => {
-            console.log('Error:', error);
-        });
-}
-function loadPostsForLeaderboardDay() {
-    useAJAXGetData('php/loadPostsForLeaderboardDay.php')
         .then(posts => {
             printPostContent(posts, 'leaderboardPostsSection');
         })
@@ -1428,7 +1481,7 @@ function printPage(page) {
     if (getParam('viewing_following')) {
         openViewFollowingOverlay();
     }
-        if (page === 'home' || page ==='viewFollowingPosts' || page === 'viewFilteredPosts') {
+        if (page === 'home' || page ==='viewFollowingPosts') {
             document.getElementById('printPostsSectionn').innerHTML += `
                                         <section>
                                 <form id="makeAPostForm" method="POST">
@@ -1441,9 +1494,8 @@ function printPage(page) {
                             <br>
                             
                             <div id="home-post-buttons">
-      <a id="viewHome" onclick="printPage('home')"><i class="fa-solid fa-earth-americas"></i></a>
-                                    <a id="viewFollowingg" onclick="printPage('viewFollowingPosts')"><i class="fa-solid fa-person-circle-plus"></i></a>
-                                    <a id="viewFiltered" onclick="printPage('viewFilteredPosts')"><i class="fa-solid fa-list-check"></i></a>                      
+      <a id="viewHome" onclick="printPage('home')"><p>Recent</p></a>
+                                    <a id="viewFollowingg" onclick="printPage('viewFollowingPosts')"><p>Following</p></a>
 </div>
             `;
 
@@ -1463,19 +1515,13 @@ function printPage(page) {
             w.color = 'var(--one)';
             w.backgroundColor = 'var(--two)';
         }
-        if (page === 'viewFilteredPosts') {
-            loadPostsForFiltering();
-            let w= document.getElementById('viewFiltered').style;
-            w.color = 'var(--one)';
-            w.backgroundColor = 'var(--two)';
-        }
-        if (page === 'leaderboard' || page === 'leaderboardDay' || page === 'leaderboardMonth' || page==='leaderboardYear') {
+
+        if (page === 'leaderboard' || page === 'leaderboardMonth' || page==='leaderboardYear') {
             document.getElementById('leaderboardPostsSection').innerHTML = `
                             <div id="leaderboardButtons">
                                 <a id="leaderboardCurrentButton" onclick="printPage('leaderboard')">Current</a>                            
                                 <a id="leaderboardMonthlyButton" onclick="printPage('leaderboardMonth')">Monthly</a>
                                 <a id="leaderboardYearlyButton" onclick="printPage('leaderboardYear')">Yearly</a>
-                                <a id="leaderboardDayButton" onclick="printPage('leaderboardDay')">History</a>
                             </div>
             `;
 
@@ -1487,12 +1533,6 @@ function printPage(page) {
             loadPostsForLeaderboard();
 
             let w = document.getElementById('leaderboardCurrentButton');
-            w.style.backgroundColor = 'var(--two)';
-            w.style.color =  'var(--one)';
-        }
-        if (page === 'leaderboardDay') {
-            loadPostsForLeaderboardDay();
-            let w = document.getElementById('leaderboardDayButton');
             w.style.backgroundColor = 'var(--two)';
             w.style.color =  'var(--one)';
         }
@@ -1519,20 +1559,24 @@ function printPage(page) {
             w.style.color = 'var(--one)';
         }
         if (page === 'profile') {
-            loadPostsForProfile(getParam('user_id'));
 
+
+            loadPostsForProfile(getParam('user_id'));
             if (getParam('user_id')==userIDD) {
                 let w = document.getElementById('profileButton');
                 w.style.backgroundColor = 'var(--two)';
                 w.style.color = 'var(--one)';
             }
         }
+        if (page === 'profileOverlay') {
+            console.log(page);
+        }
 }
 
-function printProfileContent(user_info, idOfPrint) {
+function printProfileContent(user_info, posts, idOfPrint) {
     if (profileCount === 0) {
 
-        document.getElementById(idOfPrint).innerHTML += `
+        document.getElementById('profileSection').innerHTML += `
         <section id="profileHeader">
             <img draggable="false" alt="${user_info['username']}-pfp" loading="lazy" src="userPFP/${user_info['pfp']}">
             <div id="profileUsername">
@@ -1551,7 +1595,7 @@ function printProfileContent(user_info, idOfPrint) {
                 </a>
             </div>
 </div>
-            <div id="followButtonDiv"></div>
+            <div id="followButtonDiv" class="flex-row align-center justify-center"></div>
         </section>
     `;
 
@@ -1577,7 +1621,13 @@ function printProfileContent(user_info, idOfPrint) {
 
             document.getElementById('followButtonDiv').innerHTML = `
                 <button id="followButton" onclick="addFollow(userIDD, ${user_info['id']})"></button>
-            `;
+                
+                <form id="blockForm" method="POST">
+                <input name="blocking" value="${user_info['id']}" hidden>
+<button id="blockButton" type="submit" onclick="formSubmit(event, 'block')"></button>                
+</form>
+            
+`;
 
             let wow = {
                 'followed_id': user_info['id'],
@@ -1594,13 +1644,33 @@ function printProfileContent(user_info, idOfPrint) {
                 .catch(error=>{
                     console.log(error);
                 });
+
+
+            let datat = {
+                    'blocked_id': user_info['id'],
+                    'blocker_id': userIDD
+            }
+            ajaxGETData('php/checkBlocked.php', datat)
+                .then(response=> {
+                  if (response['blocked'] === true) {
+                      document.getElementById('blockButton').innerText = 'Unblock';
+                  } else {
+                      document.getElementById('blockButton').innerHTML = `<i class="fa-solid fa-ban"></i> Block`;
+                      printPostContent(posts, 'profilePostsSection');
+                  }
+                })
+                .catch(error=> {
+                   console.log(error);
+                });
         } else {
+            printPostContent(posts, 'profilePostsSection');
             document.getElementById('profileHeader').innerHTML += `
                         <a id="openSettingsProfile" onclick="printPage('settings')"><i class="fa-solid fa-gear"></i></a>
-
             `;
         }
         profileCount += 1;
+    } else {
+        printPostContent(posts, 'profilePostsSection');
     }
 }
 function printPostContent(posts, idOfPrint) {
@@ -1662,12 +1732,44 @@ function printPostContent(posts, idOfPrint) {
         } else {
             document.getElementById(`add-medal-${p['post_id']}`).remove();
         }
+
+        // leaderboard page case
+        if (getParam('page') === 'leaderboard' || getParam('page') === 'leaderboardMonth' || getParam('page') === 'leaderboardYear') {
+            document.getElementById(`post_id_${p['post_id']}`).innerHTML += `
+                <div class="leaderboardNumber flex-row align-center justify-center">
+                <p>#</p>
+                <h1>${i+1}</h1>
+                </div>
+            `;
+            let current = document.getElementById(`post_id_${p['post_id']}`);
+            if (i === 0 || i===1||i===2) {
+                current.style.marginTop = '10px';
+                current.style.marginBottom = '10px';
+            }
+            if (i === 0) {
+                current.style.boxShadow = '0 0 10px rgb(255,215,0)';
+                current.style.borderColor = 'rgb(255,215,0)';
+                current.style.marginTop = '20px';
+            }
+            if (i === 1) {
+                current.style.boxShadow = '0 0 10px silver';
+                current.style.borderColor = 'silver';
+            }
+            if (i === 2) {
+                current.style.boxShadow = '0 0 10px red';
+                current.style.borderColor = 'red';
+            }
+            if (i===3) {
+                current.style.marginTop = '10px';
+            }
+        }
+
     }
 
 
     let w = getParam('page');
 
-    if (w=== 'home' || w==='viewFollowingPosts' || w==='viewFilteredPosts') {
+    if (w=== 'home' || w==='viewFollowingPosts') {
         postsOffset+=25;
     }
     if (w=== 'profile') {
@@ -1727,7 +1829,7 @@ function printPostContentVIEWPOST(posts, idOfPrint, loadMore) {
                                                        <div class="flex-row align-bottom">
                 <img class="postImg" alt="${p['username']}-pfp" loading="lazy" src="userPFP/${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']}, event); closeViewPostMenu()">
                 <a class="profileLink" onclick="openProfile(${p['user_id']}, event); closeViewPostMenu()">@${p['username']}</a> 
-                <a  class="addMedal"  id="add-medal-${p['post_id']}-viewpost" onclick="openViewPostEvent(event, '${woww}')"></a>
+                <a class="addMedal" id="add-medal-${p['post_id']}-viewpost" onclick="openViewPostEvent(event, '${woww}')"></a>
 
 </div>
                 <h2>${p['content']}</h2>
@@ -1764,7 +1866,7 @@ function printPostContentVIEWPOST(posts, idOfPrint, loadMore) {
                 w.style.background = 'linear-gradient(45deg, #cd7f32, #cd7f32 50%, #cd7f32)';
             }
         } else {
-            document.getElementById(`add-medal-${p['post_id']}`).remove();
+            document.getElementById(`add-medal-${p['post_id']}-viewpost`).remove();
         }
     }
 

@@ -3,6 +3,7 @@
 // must add loading medals
 
 include 'db_conn.php';
+session_start();
 
 // Function to load user information and posts for a profile
 function loadProfileData($conn, $profileID, $offset) {
@@ -68,6 +69,23 @@ function loadProfileData($conn, $profileID, $offset) {
 
     // Close the statement for posts
     $stmtPosts->close();
+
+    $stmt = $conn->prepare('SELECT filters FROM accounts WHERE id = ?');
+    $userID = intval($_SESSION['user_id']);
+    $stmt->bind_param('i',$userID);
+    $filters = null;
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $filters = stripslashes($row['filters']);
+    }
+// Iterate through each post and replace bad words
+    foreach ($posts as &$post) {
+        $badWords = json_decode($filters);
+        foreach ($badWords as $badWord) {
+            $post['content'] = str_ireplace(htmlspecialchars($badWord), '***', $post['content']);
+        }
+    }
 
     // Return the user information and posts as an associative array
     return ['user_info' => $userInfo, 'posts' => $posts];
