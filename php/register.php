@@ -35,6 +35,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     if ($stmtInsertUser->execute()) {
         $_SESSION['username'] = $username;
         $_SESSION['user_id'] = getUserID($conn);
+        $_SESSION['pfp'] = 'default.png';
         $stmtInsertUser->close();
         header('Location: ../index.html?page=home');
         exit();

@@ -721,48 +721,52 @@ function loadMedalsForSettings() {
         })
 }
 function printMedals(medalss) {
-    let k = medalss.length;
-    if (k === 0) {
+    console.log(medalss);
+
+
+    if (medalss.length === 0) {
         document.getElementById(`medalsContainer`).remove();
     } else {
         if (selectedMedal !== null) {
             document.getElementById('width-40').innerHTML = `
-<h1>Selected Medal</h1>
+            <h1>Selected Medal</h1>
             <a id="currentMedal" onclick="openViewPost(${selectedMedal[1]})"><i class="fa-solid fa-award"></i></a>
                         <button type="submit" onclick="formSubmit(event, 'changeMedal')">Submit</button>
         
         `;
 
-        let q = document.getElementById('currentMedal');
-        if (selectedMedal[3] === 1) {
-            q.style.backgroundColor = 'gold';
-            q.style.color = 'var(--one)';
-        }
-        if (selectedMedal[3] === 2) {
-            q.style.backgroundColor = 'silver';
-            q.style.color = 'var(--one)';
-        }
-        if (selectedMedal[3] === 3) {
-            q.style.backgroundColor = 'brown';
-            q.style.color = 'var(--one)';
-        }
+            let q = document.getElementById('currentMedal');
+            if (selectedMedal[3] === 1) {
+                q.style.backgroundColor = 'gold';
+                q.style.color = 'var(--one)';
+            }
+            if (selectedMedal[3] === 2) {
+                q.style.backgroundColor = 'silver';
+                q.style.color = 'var(--one)';
+            }
+            if (selectedMedal[3] === 3) {
+                q.style.backgroundColor = 'brown';
+                q.style.color = 'var(--one)';
+            }
         } else {
             document.getElementById('width-40').innerHTML = `
+                        <h1>Selected Medal</h1>
             <a id="currentMedal" onclick="openViewPost()"><i class="fa-solid fa-award"></i></a>
                         <button type="submit" onclick="formSubmit(event, 'changeMedal')">Submit</button>
         
         `;
         }
 
-        for (let i = 0; i<medalss.length;) {
+        for (let i = 0; i < medalss.length;) {
             const timestamp = medalss[i].timestamp;
             const date = new Date(timestamp);
-            const day = new Intl.DateTimeFormat("en-US", { day: "numeric" }).format(date);
-            const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
-            const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(date);
-                if (selectedMedal !== null) {
-                    if (medalss[i]['id'] === selectedMedal[0]) {
-                        document.getElementById('addToMedalsForm').innerHTML += `
+            const day = new Intl.DateTimeFormat("en-US", {day: "numeric"}).format(date);
+            const month = new Intl.DateTimeFormat("en-US", {month: "long"}).format(date);
+            const year = new Intl.DateTimeFormat("en-US", {year: "numeric"}).format(date);
+
+            if (selectedMedal !== null) {
+                if (medalss[i]['id'] === selectedMedal[0]) {
+                    document.getElementById('addToMedalsForm').innerHTML += `
             <div id="option-${i}" class="option selected" data-content="${medalss[i].id}" data-postID="${medalss[i]['post_id']}" data-placement="${medalss[i]['placement']}" onclick="selectOption(this)">
                                         <a class="addMedal" id="addMedal-${i}"><i class="fa-solid fa-award"></i></a>
                     <div class="option-inner">
@@ -770,9 +774,9 @@ function printMedals(medalss) {
                         <button onclick="openViewPostEvent(event, ${medalss[i].post_id})"><i class="fa-solid fa-magnifying-glass"></i>View</button>
                     </div>
                     </div>`;
-                    } else {
+                }  else {
 
-                        document.getElementById('addToMedalsForm').innerHTML += `
+                    document.getElementById('addToMedalsForm').innerHTML += `
             <div id="option-${i}" class="option" data-content="${medalss[i].id}" data-postID="${medalss[i]['post_id']}" data-placement="${medalss[i]['placement']}" onclick="selectOption(this)">
                     <a class="addMedal" id="addMedal-${i}"><i class="fa-solid fa-award"></i></a>
                     <div class="option-inner">
@@ -781,39 +785,52 @@ function printMedals(medalss) {
                     </div>
             </div>
         `;
-
-                    }
                 }
+                } else {
+
+                document.getElementById('addToMedalsForm').innerHTML += `
+            <div id="option-${i}" class="option" data-content="${medalss[i].id}" data-postID="${medalss[i]['post_id']}" data-placement="${medalss[i]['placement']}" onclick="selectOption(this)">
+                    <a class="addMedal" id="addMedal-${i}"><i class="fa-solid fa-award"></i></a>
+                    <div class="option-inner">
+                        <p>${month} ${day}, ${year}</p>
+                        <button onclick="openViewPostEvent(event, ${medalss[i].post_id})"><i class="fa-solid fa-magnifying-glass"></i>View</button>
+                    </div>
+            </div>
+        `;
+            }
 
 
             const w = document.getElementById(`addMedal-${i}`);
-            if (medalss[i]['placement'] === 1) {
+            if (document.getElementById(`addMedal-${i}`)) {
+                if (medalss[i]['placement'] === 1) {
 
-                w.style.width = '50px';
-                w.style.height = '50px';
-                w.style.fontSize = '2em';
-                w.style.backgroundColor = 'gold';
-                w.style.color = 'var(--one)';
+                    w.style.width = '50px';
+                    w.style.height = '50px';
+                    w.style.fontSize = '2em';
+                    w.style.backgroundColor = 'gold';
+                    w.style.color = 'var(--one)';
 
+                }
+                if (medalss[i]['placement'] === 2) {
+
+                    w.style.width = '50px';
+                    w.style.height = '50px';
+                    w.style.fontSize = '2em';
+                    w.style.backgroundColor = 'silver';
+                    w.style.color = 'var(--one)';
+
+                }
+                if (medalss[i]['placement'] === 3) {
+
+                    w.style.width = '50px';
+                    w.style.height = '50px';
+                    w.style.fontSize = '2em';
+                    w.style.backgroundColor = 'brown';
+                    w.style.color = 'var(--one)';
+
+                }
             }
-            if (medalss[i]['placement'] === 2) {
 
-                w.style.width = '50px';
-                w.style.height = '50px';
-                w.style.fontSize = '2em';
-                w.style.backgroundColor = 'silver';
-                w.style.color = 'var(--one)';
-
-            }
-            if (medalss[i]['placement'] === 3) {
-
-                w.style.width = '50px';
-                w.style.height = '50px';
-                w.style.fontSize = '2em';
-                w.style.backgroundColor = 'brown';
-                w.style.color = 'var(--one)';
-
-            }
             i++;
         }
     }
