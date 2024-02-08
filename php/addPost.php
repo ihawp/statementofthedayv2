@@ -26,7 +26,6 @@ if (isset($_SESSION['username']) && isset($_SESSION['user_id'])) {
         $lastInsertedId = $conn->insert_id;
         $stmt->close();
 
-        // Now, retrieve the details of the post with the last inserted ID
         $stmt = $conn->prepare('SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp 
                                FROM posts p
                                LEFT JOIN accounts a ON p.user_id = a.id

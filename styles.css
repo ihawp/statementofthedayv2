@@ -7,6 +7,12 @@
     --four: #F7CAC9;
     --five: #DAA520;
 }
+body {
+    margin: 0;
+    font-family: 'League Spartan', sans-serif;
+    background-color: var(--one);
+    color: var(--two);
+}
 
 ::-webkit-scrollbar {
     width: 8px;
@@ -29,1069 +35,1127 @@
     background-color: rgb(0,0,0,0.5);
 }
 
-#openSettingsProfile {
-    position: absolute;
-    top: 0;
-    right: 0;
-
-    font-size: 2em;
-
-    border: 1px rgb(0,0,0,0.2) solid;
-    border-radius: 150px;
-    padding: 7px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--two);
-    color: var(--one);
-}
-#openSettingsProfile:hover {
-    background-color: var(--one);
-    color: var(--two);
-}
-
-body {
-    margin: 0;
-    font-size: 1em;
-    font-family: 'League Spartan', sans-serif;
-    background-color: var(--one);
-    color: var(--two);
-}
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-.flex-column {
-    display: flex;
-    flex-direction: column;
-}
-.margin-top-10 {
-    margin-top: 10px;
-}
-.align-bottom {
-    align-items: end;
-}
-
-img {
-    object-fit: cover;
-}
-.postImg {
-    cursor: pointer;
-}
-
-button {
-    color: var(--one);
-    background-color: var(--two);
-    padding: 5px 10px;
-
-    cursor: pointer;
-
-    border: 0;
-    border-radius: 4px;
-}
-
-
-
-a {
-    margin: 5px;
-    transition: all 0.1s ease;
-    cursor: pointer;
-    font-size: 1.5em;
-}
-a:hover {
-    color: rgb(0,0,0,0.5);
-}
-
-#loadMoreButtonDiv p a {
-    color: var(--two);
-    font-size: 1em;
-}
-
-section, header, nav, #loadMoreButtonDivVIEWPOST, #loadMoreButtonDiv, footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-header {
-    width: 100%;
-}
-footer {
-    box-shadow: -1px 0px 11px rgb(0,0,0,0.43);
-    height: 200px;
-    justify-content: center;
-    align-items: center;
-}
-#loadMoreButtonDiv, #loadMoreButtonDivVIEWPOST {
-    width: 90%;
-    padding: 3% 5%;
-    margin-bottom: 15px;
-    height: 100px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#loadMoreButtonDiv a, #loadMoreButtonDivVIEWPOST a {
-    font-size: 3.67em;
-}
-#loadMoreButtonDiv p {
-    font-size: 1.3em;
-}
-header {
-    z-index: 9999;
-    height: 90px;
-    position: fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-#fixedHeader {
-    height: 85px;
-}
-
-nav {
-    width: min-content;
-    height: max-content;
-    justify-content: center;
-    flex-direction: row;
-    border-radius: 16px;
-    box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
-    box-sizing: border-box;
-}
-nav a {
-    box-sizing: border-box;
-    margin: 0;
-    font-size: 2em;
-    padding: 18px 0;
-    width: 210px;
-
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: var(--two);
-    background-color: var(--one);
-    transition: all 0.1s ease;
-}
-#notificationRedDot {
-    display: none;
-    padding: 3px 7.5px;
-    border-radius: 150px;
-
-    background-color: red;
-    color: white;
-
-    position: absolute;
-
-    top: 15px;
-    left: 105px;
-}
-#updateNotificationCount {
-    font-size: 0.43em;
-    font-weight: 800;
-    margin: 0;
-}
-nav a:first-child {
-    border-bottom-left-radius: 16px;
-    border-top-left-radius: 16px;
-}
-nav a:last-child {
-    border-bottom-right-radius: 16px;
-    border-top-right-radius: 16px;
-}
-nav a:hover {
-    color: var(--one);
-    background-color: var(--two);
-}
-
-.post {
-    cursor: pointer;
-    background-color: var(--one);
-    box-sizing: border-box;
-
-    position: relative;
-
-    padding: 12px 0 0 0;
-
-    width: 600px;
-    height: max-content;
-
-    border: 1px rgb(0,0,0,0.2) solid;
-    border-radius: 4px;
-
-    box-shadow: 0 0 1.5px rgb(0,0,0,0.2);
-
-    background-color: rgb(0,0,0,0.02);
-    margin-top: 4px;
-}
-.leaderboardNumber {
-    width: 50px;
-    height: 50px;
-    background-color: var(--two);
-    color: var(--one);
-    position: absolute;
-    top: 5px;
-    right: 7.5px;
-
-    border-radius: 150px;
-}
-.leaderboardNumber h1 {
-    font-size: 1.8em;
-    margin: 0;
-}
-.leaderboardNumber p {
-    font-size: 1.3em;
-    margin: 0;
-}
-.paddingg {
-    padding: 0 0 0 8px;
-}
-.post:first-child {
-    margin-top: 0;
-}
-.post h2 {
-    box-sizing: border-box;
-    padding: 5px 10px;
-    margin-top: 10px;
-    font-weight: 400;
-
-    font-size: 1.68em;
-}
-.post img {
-    width: 47px;
-    height: 47px;
-    border-radius: 150px;
-    margin-left: 5px;
-    object-fit: cover;
-    border: 0.5px solid rgb(0,0,0,0.2);
-}
-.profileLink {
-    margin-left: 5px;
-    margin-bottom: 0;
-    font-size: 1.34em;
-    font-weight: 700;
-    color: var(--two);
-}
-.profileLink:hover {
-    color: black;
-}
-.main-post {
-    border-radius: 0;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    cursor: default;
-}
-
-
-.post-buttons {
-    width: 100%;
-    height: 30px;
-
-    margin-top: -15px;
-
-    border: 0.75px rgb(0,0,0,0.1) solid;
-
-    border-left: 0;
-    border-right: 0;
-    border-bottom: 0;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
-}
-.post-buttons a {
-    margin: 0;
-    padding: 0;
-    font-size: 20px;
-    font-weight: 800;
-
-
-    width: 20%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.post-buttons p {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-#profileHeader h1 {
-    font-size: 3em;
-    margin: 0;
-}
-#profileHeader p {
-    margin: 3px;
-}
-
-#profileHeader {
-    position: relative;
-    margin-top: 25px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    padding: 19px 0;
-    width: 600px;
-
-}
-#profileHeader img {
-    width: 200px;
-    height: 200px;
-    border-radius: 150px;
-    box-shadow: 0 0 15px rgb(0,0,0,0.43);
-}
-#profileUsername {
-    margin-top: 30px;
-    margin-bottom: -15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-}
-
-textarea:focus {
-    outline: none;
-}
-input:focus {
-    outline: none;
-}
-#makeAPost, #commentContent {
-    outline: none;
-    margin-top: 25px;
-
-    box-sizing: border-box;
-    background-color: var(--two);
-    border-radius: 4px;
-    resize: none;
-
-    width: 600px;
-    height: 140px;
-    padding: 10px;
-
-    overflow-y: scroll;
-    overflow-x: hidden;
-
-    font-size: 1.6em;
-    font-family: 'League Spartan', sans-serif;
-
-    border: 0;
-    margin-bottom: -2.75px;
-}
-#commentContent {
-    margin-top: 0;
-    margin-bottom: 0;
-    width: 600px;
-}
-#makeAPostForm, #addCommentForm {
-    position: relative;
-}
-.postButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 1.65em;
-
-    padding: 10px 25px;
-    border-radius: 150px;
-    background-color: var(--two);
-    color: var(--one);
-    border: 2px var(--one) solid;
-
-    position: absolute;
-
-    bottom: 5px;
-    right: 5px;
-}
-.postButton:hover {
-    color: white;
-    background-color: black;
-}
-#post-options {
-    margin-top: -3px;
-    background-color: var(--two);
-
-    color: var(--one);
-
-    border-radius: 0 0 4px 4px;
-    border: 0;
-
-    height: 30px;
-
-    display: flex;
-    flex-direction: row;
-}
-
-
-/* alert system*/
 @media screen and (min-width: 1px) {
-.alert {
-    background-color: blue;
-    width: 100%;
-    min-height: 60px;
+    body {
+        font-size: 1.1em;
+    }
 
-    margin-top: 15px;
+    #openSettingsProfile {
+        position: absolute;
+        top: 0;
+        right: 0;
 
-    box-sizing: border-box;
+        font-size: 2em;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
+        border: 1px rgb(0,0,0,0.2) solid;
+        border-radius: 150px;
+        padding: 7px;
 
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    padding: 5px;
+        background-color: var(--two);
+        color: var(--one);
+    }
+    #openSettingsProfile:hover {
+        background-color: var(--one);
+        color: var(--two);
+    }
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+    }
+    .margin-top-10 {
+        margin-top: 10px;
+    }
+    .align-bottom {
+        align-items: end;
+    }
 
-    font-size: 1.15em;
-}
-.alert i {
-    padding: 5px 12.5px;
-    border-radius: 150px;
+    img {
+        object-fit: cover;
+    }
+    .postImg {
+        cursor: pointer;
+    }
 
-    background-color: rgb(0,0,0,0.2);
-    margin-right: 10px;
-    margin-left: 10px;
-}
-#alert-container {
-    z-index: 10001;
-    position: fixed;
-    overflow: hidden;
+    button {
+        color: var(--one);
+        background-color: var(--two);
+        padding: 5px 10px;
 
-    display: none;
+        cursor: pointer;
 
-    left: 0;
-    bottom: 0;
-
-    box-sizing: border-box;
-    width: 100vw;
-    height: 60px;
-    max-height: 40vh;
-
-    align-items: start;
-    justify-content: end;
-    flex-direction: column;
-}
-}
-@media screen and (min-width: 962px) {
-
-}
-/* end of alert system */
-
-/* relatedto profileheader*/
-/* changes font weights for followers */
-/* and following text on profile header*/
-#followersLabel, #followingLabel {
-    font-weight: 600;
-}
-#followingCount, #followCount {
-    font-weight: 500;
-}
+        border: 0;
+        border-radius: 4px;
+    }
 
 
-#commentSection, #deleteSection, #viewPostSection, #viewFollowers, #viewFollowing {
-    width: 100vw;
-    min-height: 100vh;
-    height: auto;
-    z-index: 10000;
-    top: 0;
-    left: 0;
-    position: fixed;
-    background-color: rgb(0,0,0,0.43);
-    justify-content: center;
-}
-.loadMore {
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75em;
-}
-.loadMore p {
-    font-size: 1em;
-}
-#viewPostSectionInner, #viewFollowersInner, #viewFollowingInner {
-    position: relative;
-    overflow: auto;
-    height: max-content;
-    max-height: 80vh;
 
-    border-radius: 8px;
+    a {
+        margin: 5px;
+        transition: all 0.1s ease;
+        cursor: pointer;
+        font-size: 1.5em;
+    }
+    a:hover {
+        color: rgb(0,0,0,0.5);
+    }
 
-    background-color: var(--one);
+    #loadMoreButtonDiv p a {
+        color: var(--two);
+        font-size: 1em;
+    }
 
-    box-shadow: 0 0 10px rgb(0,0,0,0.43);
+    section, header, nav, #loadMoreButtonDivVIEWPOST, #loadMoreButtonDiv, footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    header {
+        width: 100%;
+    }
+    footer {
+        box-shadow: -1px 0px 11px rgb(0,0,0,0.43);
+        height: 200px;
+        justify-content: center;
+        align-items: center;
+    }
+    #loadMoreButtonDiv, #loadMoreButtonDivVIEWPOST {
+        width: 90%;
+        padding: 3% 5%;
+        margin-bottom: 15px;
+        height: 100px;
 
-    box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    #loadMoreButtonDiv a, #loadMoreButtonDivVIEWPOST a {
+        font-size: 3.67em;
+    }
+    #loadMoreButtonDiv p {
+        font-size: 1.3em;
+    }
+    header {
+        z-index: 9999;
+        height: max-content;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #fixedHeader {
+        height: 65px;
+    }
 
+    nav {
+        width: 100vw;
+        height: max-content;
+        justify-content: center;
+        flex-direction: row;
+        border-radius: 0;
+        box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
+        box-sizing: border-box;
+    }
+    nav a {
+        box-sizing: border-box;
+        margin: 0;
+        font-size: 2em;
+        padding: 18px 0;
 
-}
-#viewPostSectionInnerPOSTPRINT, #viewPostSectionInnerAddon {
-    position: relative;
-    overflow: auto;
-    height: min-content;
-}
-
-#printPostsSectionn {
-    margin-bottom: 3.75px;
-}
-.newPost {
-    animation: 1.1s bananaphone ease;
-}
-@keyframes bananaphone {
-    0% {
-        opacity: 0;
         position: relative;
-        transform: translateX(200px);
-        box-shadow: -15px 0px 5px rgb(0,0,0,0.43);
+
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: var(--two);
+        background-color: var(--one);
+        transition: all 0.1s ease;
     }
-    100% {
-        opacity: 1;
-        transform: translateX(0px);
-        box-shadow: 0 0 0px rgb(0,0,0,0.43);
+    #notificationRedDot {
+        display: none;
+        padding: 3px 7.5px;
+        border-radius: 150px;
+
+        background-color: red;
+        color: white;
+
+        position: absolute;
+
+        top: 25%;
+        left: 49%;
+    }
+    #updateNotificationCount {
+        font-size: 0.43em;
+        font-weight: 800;
+        margin: 0;
+    }
+    nav a:first-child {
+        border-bottom-left-radius: 16px;
+        border-top-left-radius: 16px;
+    }
+    nav a:last-child {
+        border-bottom-right-radius: 16px;
+        border-top-right-radius: 16px;
+    }
+    nav a:hover {
+        color: var(--one);
+        background-color: var(--two);
+    }
+
+    .post {
+        cursor: pointer;
+        background-color: var(--one);
+        box-sizing: border-box;
+
+        position: relative;
+
+        padding: 12px 0 0 0;
+
+        width: 100vw;
+        height: max-content;
+
+        border: 1px rgb(0,0,0,0.2) solid;
+        border-radius: 4px;
+
+        box-shadow: 0 0 1.5px rgb(0,0,0,0.2);
+
+        background-color: rgb(0,0,0,0.02);
+        margin-top: 4px;
+    }
+    .leaderboardNumber {
+        width: 50px;
+        height: 50px;
+        background-color: var(--two);
+        color: var(--one);
+        position: absolute;
+        top: 5px;
+        right: 7.5px;
+
+        border-radius: 150px;
+    }
+    .leaderboardNumber h1 {
+        font-size: 1.8em;
+        margin: 0;
+    }
+    .leaderboardNumber p {
+        font-size: 1.3em;
+        margin: 0;
+    }
+    .paddingg {
+        padding: 0 0 0 8px;
+    }
+    .post:first-child {
+        margin-top: 0;
+    }
+    .post h2 {
+        box-sizing: border-box;
+        padding: 5px 10px;
+        margin-top: 10px;
+        font-weight: 400;
+
+        font-size: 1.68em;
+    }
+    .post img {
+        width: 47px;
+        height: 47px;
+        border-radius: 150px;
+        margin-left: 5px;
+        object-fit: cover;
+        border: 0.5px solid rgb(0,0,0,0.2);
+    }
+    .profileLink {
+        margin-left: 5px;
+        margin-bottom: 0;
+        font-size: 1.34em;
+        font-weight: 700;
+        color: var(--two);
+    }
+    .profileLink:hover {
+        color: black;
+    }
+    .main-post {
+        border-radius: 0;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        cursor: default;
+    }
+
+
+    .post-buttons {
+        width: 100%;
+        height: 30px;
+
+        margin-top: -15px;
+
+        border: 0.75px rgb(0,0,0,0.1) solid;
+
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+    }
+    .post-buttons a {
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        font-weight: 800;
+
+
+        width: 20%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .post-buttons p {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    #profileHeader h1 {
+        font-size: 3em;
+        margin: 0;
+    }
+    #profileHeader p {
+        margin: 3px;
+    }
+
+    #profileHeader {
+        position: relative;
+        margin-top: 25px;
+        box-sizing: border-box;
+        border-radius: 5px;
+        padding: 19px 0;
+        width: 100vw;
+    }
+    #profileHeader img {
+        width: 200px;
+        height: 200px;
+        border-radius: 150px;
+        box-shadow: 0 0 15px rgb(0,0,0,0.43);
+    }
+    #profileUsername {
+        margin-top: 30px;
+        margin-bottom: -15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    textarea:focus {
+        outline: none;
+    }
+    input:focus {
+        outline: none;
+    }
+    #makeAPost, #commentContent {
+        outline: none;
+        margin-top: 25px;
+
+        box-sizing: border-box;
+        background-color: var(--two);
+        border-radius: 4px;
+        resize: none;
+
+        width: 100vw;
+        height: 140px;
+        padding: 10px;
+
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        font-size: 1.6em;
+        font-family: 'League Spartan', sans-serif;
+
+        border: 0;
+        margin-bottom: -2.75px;
+    }
+    #commentContent {
+        margin-top: 0;
+        margin-bottom: 0;
+        width: 600px;
+    }
+    #makeAPostForm, #addCommentForm {
+        position: relative;
+    }
+    .postButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 1.65em;
+
+        padding: 10px 25px;
+        border-radius: 150px;
+        background-color: var(--two);
+        color: var(--one);
+        border: 2px var(--one) solid;
+
+        position: absolute;
+
+        bottom: 5px;
+        right: 5px;
+    }
+    .postButton:hover {
+        color: white;
+        background-color: black;
+    }
+    #post-options {
+        margin-top: -3px;
+        background-color: var(--two);
+
+        color: var(--one);
+
+        border-radius: 0 0 4px 4px;
+        border: 0;
+
+        height: 30px;
+
+        display: flex;
+        flex-direction: row;
+    }
+
+
+    /* alert system*/
+    @media screen and (min-width: 1px) {
+    .alert {
+        background-color: blue;
+        width: 100%;
+        min-height: 60px;
+
+        margin-top: 15px;
+
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+
+
+        padding: 5px;
+
+        font-size: 1.15em;
+    }
+    .alert i {
+        padding: 5px 12.5px;
+        border-radius: 150px;
+
+        background-color: rgb(0,0,0,0.2);
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+    #alert-container {
+        z-index: 10001;
+        position: fixed;
+        overflow: hidden;
+
+        display: none;
+
+        left: 0;
+        bottom: 0;
+
+        box-sizing: border-box;
+        width: 100vw;
+        height: 60px;
+        max-height: 40vh;
+
+        align-items: start;
+        justify-content: end;
+        flex-direction: column;
+    }
+    }
+    @media screen and (min-width: 962px) {
+
+    }
+    /* end of alert system */
+
+    /* relatedto profileheader*/
+    /* changes font weights for followers */
+    /* and following text on profile header*/
+    #followersLabel, #followingLabel {
+        font-weight: 600;
+    }
+    #followingCount, #followCount {
+        font-weight: 500;
+    }
+
+
+    #commentSection, #deleteSection, #viewPostSection, #viewFollowers, #viewFollowing {
+        width: 100vw;
+        min-height: 100vh;
+        height: auto;
+        z-index: 10000;
+        top: 0;
+        left: 0;
+        position: fixed;
+        background-color: rgb(0,0,0,0.43);
+        justify-content: center;
+    }
+    .loadMore {
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75em;
+    }
+    .loadMore p {
+        font-size: 1em;
+    }
+    #viewPostSectionInner, #viewFollowersInner, #viewFollowingInner {
+        position: relative;
+        overflow: auto;
+        height: max-content;
+        max-height: 80vh;
+
+        width:100vw;
+
+        border-radius: 8px;
+
+        background-color: var(--one);
+
+        box-shadow: 0 0 10px rgb(0,0,0,0.43);
+
+        box-sizing: border-box;
+
+
+    }
+    #viewPostSectionInnerPOSTPRINT, #viewPostSectionInnerAddon {
+        position: relative;
+        overflow: auto;
+        height: min-content;
+    }
+
+    #printPostsSectionn {
+        margin-bottom: 3.75px;
+    }
+    .newPost {
+        animation: 1.1s bananaphone ease;
+    }
+    @keyframes bananaphone {
+        0% {
+            opacity: 0;
+            position: relative;
+            transform: translateX(200px);
+            box-shadow: -15px 0px 5px rgb(0,0,0,0.43);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0px);
+            box-shadow: 0 0 0px rgb(0,0,0,0.43);
+        }
+    }
+
+
+    #leaderboardButtons {
+        border-radius: 6px;
+        margin: 0;
+        margin-top: 25px;
+
+
+        display: flex;
+        flex-direction: row;
+
+        box-sizing: content-box;
+        width: 100vw;
+
+        border: 1px solid rgb(0,0,0,0.2);
+    }
+    .notification {
+        width: 100vw;
+        height: 80px;
+
+        padding-left: 19px;
+
+        background-color: rgb(0,0,0,0.2);
+
+        box-sizing: border-box;
+
+        margin-bottom: 4px;
+
+        border-radius: 6px;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+    }
+    .notification p {
+        width: 100%;
+        font-size: 1.3em;
+    }
+    .noti-right-box {
+        border: 0;
+        width: 100px;
+        height: 100%;
+
+        color: rgb(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5em;
+    }
+    .noti-first-time {
+        background-color: var(--one);
+        border: solid 1px rgb(0,0,0,0.2);
+    }
+    #notificationsSection {
+        margin-top: 25px;
+    }
+    #leaderboardButtons a {
+        height: 50px;
+        background-color: var(--one);
+        color: var(--two);
+        margin: 0;
+        width: 43%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #leaderboardButtons a:hover {
+        background-color: var(--two);
+        color: var(--one);
+    }
+    #leaderboardButtons a:first-child {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+    }
+    #leaderboardButtons a:last-child {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+
+    .addMedal {
+        font-size: 0.75em;
+        box-sizing: border-box;
+
+        width: 21px;
+        height: 21px;
+        border-radius: 4px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
+        margin-bottom: 4px;
+    }
+    #profileMedal {
+        margin-left: 10px;
+        width: 34px;
+        height: 34px;
+        font-size: 1.3em;
+    }
+
+    #home-post-buttons {
+        width: 100vw;
+
+        display: flex;
+        box-sizing: border-box;
+
+        border-radius: 0;
+        margin-bottom: 2.5px;
+
+        margin-top: -23px;
+    }
+    #home-post-buttons a {
+        width: 50%;
+        height: 45px;
+
+        color: var(--two);
+        background-color: rgb(0,0,0,0.1);
+
+        margin: 0;
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75em;
+    }
+    #home-post-buttons a:hover {
+        background-color: var(--two);
+        color: var(--one);
+    }
+    #home-post-buttons a {
+        display: flex;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+    }
+    #home-post-buttons p {
+        margin: 0;
+        font-size: 0.75em;
+    }
+    #home-post-buttons a:first-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    #home-post-buttons a:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+    }
+    form {
+        width: max-content;
+    }
+    #logout {
+        color: white;
+        background-color: red;
+        padding: 5px 10px;
+        border-radius: 4px;
+        width: fit-content;
+        text-decoration: none;
+        margin: 0;
+    }
+
+    #settingsSection {
+        margin-top: 5px;
+        margin-bottom: 25px;
+        border-radius: 8px;
+        width: 100vw;
+        padding: 19px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+    }
+    #usernameeee {
+        color: var(--two);
+    }
+    #usernameForm, #passwordForm {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+
+    #settingsSection input {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid rgb(0,0,0,0.2);
+    }
+
+    #followButton i, #blockButton i {
+        margin-right: 5px;
+    }
+    #followButton {
+        margin-right: 6px;
+    }
+    #followButton, #blockButton {
+        margin-top: 6px;
+        margin-bottom: 15px;
+        width: 100px;
+    }
+
+    .align-end {
+        display: flex;
+        align-items: left;
+        justify-content: end;
+    }
+    #addFilters, #filtersFormCollected {
+        flex-direction: column;
+    }
+    .filter {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        padding: 10px 0 7.5px 5px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-top: 1px solid rgb(0,0,0,0.2);
+    }
+    .filter:first-child {
+        border: 0;
+        margin-top: 15px;
+    }
+    .filter p{
+        opacity: 0.9;
+        font-size: 1.3em;
+        width: 100%;
+        margin: 0;
+    }
+    .filter button {
+        width: 50px;
+        margin: 0;
+        margin-left: 30px;
+    }
+    .filter button i {
+        font-size: 1.2rem;
+    }
+
+
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .align-end {
+        align-items: flex-end;
+    }
+    /* settings: addPFPForm */
+    .nice-box {
+        width: 100vw;
+        position: relative;
+
+        border: 1px solid rgb(0,0,0,0.2);
+
+        padding: 20px 15px;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+        margin-top: 3px;
+        margin-bottom: 3px;
+        border-radius: 6px;
+    }
+    .nice-box:first-child {
+        margin-top: 0;
+    }
+    .view-followers {
+        flex-direction: row;
+        align-items: center;
+        justify-content: start;
+        cursor: pointer;
+    }
+    .view-followers button {
+        height: min-content;
+        width: max-content;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    .view-followers button i {
+        margin-right: 5px;
+    }
+    .view-followers img {
+        width: 50px;
+        height: 50px;
+        border-radius: 150px;
+    }
+    .view-followers p {
+        margin: 0;
+        margin-left: 10px;
+        width: 80%;
+        font-size: 2em;
+    }
+    #file {
+        position: absolute;
+        opacity: 0;
+        width: 125px;
+        height: 125px;
+        border-radius: 150px;
+        cursor: pointer;
+    }
+    .pfpImageOverlay {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        width: 125px;
+        height: 125px;
+        border-radius: 150px;
+    }
+    .addPFPOverlay {
+        border-radius: 150px;
+        background-color: #ffffff;
+        position: absolute;
+        opacity: 0;
+        width: 125px;
+        height: 125px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .addPFPOverlay i {
+        font-size: 4em;
+        color: var(--one);
+
+    }
+    .pfpImageOverlay:hover .addPFPOverlay {
+        opacity: 0.5;
+    }
+    #addPFPForm button {
+        width: 125px;
+    }
+    #previewImage {
+        width: 125px;
+        height: 125px;
+    }
+    #addPFPForm img {
+        border: 0;
+        border-radius: 150px;
+    }
+    /* ***** */
+
+    #viewPostInfoBox {
+        height: 200px;
+    }
+
+
+
+    /* */
+
+    #medalsForm {
+        width: 100%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+    }
+    #addToMedalsForm {
+        display: flex;
+        flex-direction: column;
+        max-height: 266.5px;
+        overflow-y: scroll;
+    }
+    #width-60 {
+        width: 100vw;
+        margin: 0;
+        height: max-content;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #width-40 {
+        width: 100vw;
+        height: max-content;
+        max-height: 300px;
+        box-sizing: border-box;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+
+        margin-bottom: 15px;
+    }
+    #width-40 h1 {
+        margin: 0;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+    }
+    #width-40 button {
+        margin-top: 10px;
+        height: 34px;
+        width: 175px;
+    }
+    button {
+        border: 1px transparent solid;
+    }
+    button:hover {
+        border: 1px var(--two) solid;
+        background-color: var(--one);
+        color: var(--two);
+    }
+
+    #currentMedal {
+        margin: 0;
+        width: 150px;
+        height: 150px;
+        border-radius: 5px;
+
+        font-size: 6em;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+        transition: ease-out 0.43s;
+    }
+    #currentMedal:hover {
+        box-shadow: 0 0 25px rgb(0,0,0,0.2);
+    }
+    .option {
+
+        box-sizing: border-box;
+
+
+
+        height: auto;
+        min-width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: end;
+        justify-content: left;
+        padding: 10px;
+        border: 1px solid rgb(0,0,0,0.2);
+        border-radius: 5px;
+        cursor: pointer;
+
+        margin-top: 5px;
+    }
+    .option-inner {
+        width: 235px;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
+        text-align: center;
+        margin: 0;
+        box-sizing: border-box;
+        margin-bottom: 4px;
+    }
+    .option-inner p {
+        margin: 0;
+        margin-left: 3px;
+        margin-bottom: 4.5px;
+        font-weight: 800;
+    }
+    .option-inner button {
+        height: 20px;
+        margin: 3px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: min-content;
+    }
+    .option-inner i {
+        margin-right: 2px;
+    }
+    .option:first-child {
+        margin-top: 0;
+    }
+
+    .option.selected {
+        background-color: #4caf50;
+        color: #fff;
+    }
+
+
+    #profileOverlayDiv {
+        width: 100vw;
+        height: 100vh;
+
+        background-color: var(--one);
+
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    .align-center {
+        align-items: center;
+    }
+    .justify-center {
+        justify-content: center;
+    }
+    .settings-first form{
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    .settings-first h1 {
+        width: 100%;
+        font-size: 1.2em;
+    }
+    .settings-first form {
+        border-top: 1px solid rgb(0,0,0,0.2);
+    }
+    .settings-first form:first-child {
+        border: 0;
+    }
+    #passwordForm {
+        border-bottom: 1px solid rgb(0,0,0,0.2);
+        margin-bottom: 15px;
+    }
+    .settings-first button {
+        margin-left: 4px;
+    }
+    #filtersForm {
+        width: 100%;
+    }
+    #filtersForm button {
+        width: max-content;
+        margin-left: 4px;
+    }
+    #filtersForm h1 {
+        width: 100%;
     }
 }
 
+@media screen and (min-width: 777px) {
+    body {
+        font-size: 1em;
+    }
+    .post {
+        width: 600px;
+    }
 
-#leaderboardButtons {
-    border-radius: 6px;
-    margin: 0;
-    margin-top: 25px;
+    nav {
+        border-radius: 16px;
+        width: min-content;
+    }
+    nav a {
+        width: 210px;
+    }
 
+    #profileHeader {
+        width: 600px;
+    }
 
-    display: flex;
-    flex-direction: row;
-
-    box-sizing: content-box;
-    width: 600px;
-
-    border: 1px solid rgb(0,0,0,0.2);
+    #makeAPost, #commentContent {
+        width: 600px;
+    }
+    #home-post-buttons {
+        width: 600px;
+    }
+    #viewPostSectionInner, #viewFollowersInner, #viewFollowingInner {
+        width: min-content;
+    }
+    .notification {
+        width: 600px;
+    }
+    #leaderboardButtons {
+        width: 600px;
+    }
+    header {
+        height: 90px;
+    }
+    #fixedHeader {
+        height: 85px;
+    }
+    #settingsSection {
+        width: 600px;
+    }
+    .nice-box {
+        width: 600px;
+    }
+    #medalsForm {
+        flex-direction: row;
+    }
+    .width-40 {
+        width: 40%;
+        margin-bottom: 0;
+    }
+    .width-60 {
+        width: 60%;
+    }
 }
-.notification {
-    width: 600px;
-    height: 80px;
-
-    padding-left: 19px;
-
-    background-color: rgb(0,0,0,0.2);
-
-    box-sizing: border-box;
-
-    margin-bottom: 4px;
-
-    border-radius: 6px;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    cursor: pointer;
-}
-.notification p {
-    width: 100%;
-    font-size: 1.3em;
-}
-.noti-right-box {
-    border: 0;
-    width: 100px;
-    height: 100%;
-
-    color: rgb(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5em;
-}
-.noti-first-time {
-    background-color: var(--one);
-    border: solid 1px rgb(0,0,0,0.2);
-}
-#notificationsSection {
-    margin-top: 25px;
-}
-#leaderboardButtons a {
-    height: 50px;
-    background-color: var(--one);
-    color: var(--two);
-    margin: 0;
-    width: 43%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-#leaderboardButtons a:hover {
-    background-color: var(--two);
-    color: var(--one);
-}
-#leaderboardButtons a:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-}
-#leaderboardButtons a:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-.addMedal {
-    font-size: 0.75em;
-    box-sizing: border-box;
-
-    width: 21px;
-    height: 21px;
-    border-radius: 4px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 0;
-    margin-bottom: 4px;
-}
-#profileMedal {
-    margin-left: 10px;
-    width: 34px;
-    height: 34px;
-    font-size: 1.3em;
-}
-
-#home-post-buttons {
-    width: 600px;
-
-    display: flex;
-    box-sizing: border-box;
-
-    border-radius: 0;
-    margin-bottom: 2.5px;
-
-    margin-top: -23px;
-}
-#home-post-buttons a {
-    width: 50%;
-    height: 45px;
-
-    color: var(--two);
-    background-color: rgb(0,0,0,0.1);
-
-    margin: 0;
-    padding: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75em;
-}
-#home-post-buttons a:hover {
-    background-color: var(--two);
-    color: var(--one);
-}
-#home-post-buttons a {
-    display: flex;
-    box-sizing: border-box;
-    align-items: center;
-    justify-content: center;
-}
-#home-post-buttons p {
-    margin: 0;
-    font-size: 0.75em;
-}
-#home-post-buttons a:first-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-}
-#home-post-buttons a:last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-form {
-    width: max-content;
-}
-#logout {
-    color: white;
-    background-color: red;
-    padding: 5px 10px;
-    border-radius: 4px;
-    width: fit-content;
-    text-decoration: none;
-    margin: 0;
-}
-
-#settingsSection {
-    margin-top: 5px;
-    margin-bottom: 25px;
-    border-radius: 8px;
-    width: 600px;
-    padding: 19px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-}
-#usernameeee {
-    color: var(--two);
-}
-#usernameForm, #passwordForm {
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-
-#settingsSection input {
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: 1px solid rgb(0,0,0,0.2);
-}
-
-#followButton i, #blockButton i {
-    margin-right: 5px;
-}
-#followButton {
-    margin-right: 6px;
-}
-#followButton, #blockButton {
-    margin-top: 6px;
-    margin-bottom: 15px;
-    width: 100px;
-}
-
-.align-end {
-    display: flex;
-    align-items: left;
-    justify-content: end;
-}
-#addFilters, #filtersFormCollected {
-    flex-direction: column;
-}
-.filter {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    padding: 10px 0 7.5px 5px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-top: 1px solid rgb(0,0,0,0.2);
-}
-.filter:first-child {
-    border: 0;
-    margin-top: 15px;
-}
-.filter p{
-    opacity: 0.9;
-    font-size: 1.3em;
-    width: 100%;
-    margin: 0;
-}
-.filter button {
-    width: 50px;
-    margin: 0;
-    margin-left: 30px;
-}
-.filter button i {
-    font-size: 1.2rem;
-}
-
-
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
-}
-
-.align-end {
-    align-items: flex-end;
-}
-/* settings: addPFPForm */
-.nice-box {
-    width: 600px;
-    position: relative;
-
-    border: 1px solid rgb(0,0,0,0.2);
-
-    padding: 20px 15px;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: column;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    border-radius: 6px;
-}
-.nice-box:first-child {
-    margin-top: 0;
-}
-.view-followers {
-    flex-direction: row;
-    align-items: center;
-    justify-content: start;
-    cursor: pointer;
-}
-.view-followers button {
-    height: min-content;
-    width: max-content;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-.view-followers button i {
-    margin-right: 5px;
-}
-.view-followers img {
-    width: 50px;
-    height: 50px;
-    border-radius: 150px;
-}
-.view-followers p {
-    margin: 0;
-    margin-left: 10px;
-    width: 80%;
-    font-size: 2em;
-}
-#file {
-    position: absolute;
-    opacity: 0;
-    width: 125px;
-    height: 125px;
-    border-radius: 150px;
-    cursor: pointer;
-}
-.pfpImageOverlay {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    width: 125px;
-    height: 125px;
-    border-radius: 150px;
-}
-.addPFPOverlay {
-    border-radius: 150px;
-    background-color: #ffffff;
-    position: absolute;
-    opacity: 0;
-    width: 125px;
-    height: 125px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-.addPFPOverlay i {
-    font-size: 4em;
-    color: var(--one);
-
-}
-.pfpImageOverlay:hover .addPFPOverlay {
-    opacity: 0.5;
-}
-#addPFPForm button {
-    width: 125px;
-}
-#previewImage {
-    width: 125px;
-    height: 125px;
-}
-#addPFPForm img {
-    border: 0;
-    border-radius: 150px;
-}
-/* ***** */
-
-#viewPostInfoBox {
-    height: 200px;
-}
-
-
-
-/* */
-
-#medalsContainer {
-}
-
-#medalsForm {
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: start;
-}
-#addToMedalsForm {
-    display: flex;
-    flex-direction: column;
-    max-height: 266.5px;
-    overflow-y: scroll;
-}
-#width-60 {
-    width: 60%;
-    margin: 0;
-    height: max-content;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-#width-40 {
-    width: 40%;
-    height: max-content;
-    max-height: 300px;
-    box-sizing: border-box;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-}
-#width-40 h1 {
-    margin: 0;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
-#width-40 button {
-    margin-top: 10px;
-    height: 34px;
-    width: 175px;
-}
-button {
-    border: 1px transparent solid;
-}
-button:hover {
-    border: 1px var(--two) solid;
-    background-color: var(--one);
-    color: var(--two);
-}
-
-#currentMedal {
-    margin: 0;
-    width: 150px;
-    height: 150px;
-    border-radius: 5px;
-
-    font-size: 6em;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: black;
-    transition: ease-out 0.43s;
-}
-#currentMedal:hover {
-    box-shadow: 0 0 25px rgb(0,0,0,0.2);
-}
-.option {
-
-    box-sizing: border-box;
-
-
-
-    height: auto;
-    min-width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: end;
-    justify-content: left;
-    padding: 10px;
-    border: 1px solid rgb(0,0,0,0.2);
-    border-radius: 5px;
-    cursor: pointer;
-
-    margin-top: 5px;
-}
-.option-inner {
-    width: 235px;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: center;
-    text-align: center;
-    margin: 0;
-    box-sizing: border-box;
-    margin-bottom: 4px;
-}
-.option-inner p {
-    margin: 0;
-    margin-left: 3px;
-    margin-bottom: 4.5px;
-    font-weight: 800;
-}
-.option-inner button {
-    height: 20px;
-    margin: 3px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: min-content;
-}
-.option-inner i {
-    margin-right: 2px;
-}
-.option:first-child {
-    margin-top: 0;
-}
-
-.option.selected {
-    background-color: #4caf50;
-    color: #fff;
-}
-
-
-#profileOverlayDiv {
-    width: 100vw;
-    height: 100vh;
-
-    background-color: var(--one);
-
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-.align-center {
-    align-items: center;
-}
-.justify-center {
-    justify-content: center;
-}
-.settings-first form{
-    margin-bottom: 15px;
-    width: 100%;
-}
-.settings-first h1 {
-    width: 100%;
-    font-size: 1.2em;
-}
-.settings-first form {
-    border-top: 1px solid rgb(0,0,0,0.2);
-}
-.settings-first form:first-child {
-    border: 0;
-}
-#passwordForm {
-    border-bottom: 1px solid rgb(0,0,0,0.2);
-    margin-bottom: 15px;
-}
-.settings-first button {
-    margin-left: 4px;
-}
-#filtersForm {
-    width: 100%;
-}
-#filtersForm button {
-    width: max-content;
-    margin-left: 4px;
-}
-#filtersForm h1 {
-    width: 100%;
-}
-
 
 

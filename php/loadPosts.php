@@ -47,7 +47,6 @@ if ($stmt->execute()) {
         $row = $result->fetch_assoc();
         $filters = stripslashes($row['filters']);
     }
-    // Iterate through each post and replace bad words
     foreach ($data as &$post) {
         $badWords = json_decode($filters);
         foreach ($badWords as $badWord) {

@@ -13,8 +13,6 @@ $username = $_SESSION['username'];
 // check parentIDs to determine if it is a comment
 // so that you can delete the notification for the comment
 
-
-// Check if it's a comment
 $stmtCheckComment = $conn->prepare('SELECT parent_post_id FROM posts WHERE post_id = ? LIMIT 1');
 $stmtCheckComment->bind_param('i', $postID);
 $stmtCheckComment->execute();

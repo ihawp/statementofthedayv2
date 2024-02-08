@@ -33,6 +33,7 @@ if ($stmt->execute()) {
         ];
     }
     $lengthOfArray = sizeof($data);
+    $stmt->close();
     echo json_encode(['count'=>$lengthOfArray]);
     exit();
 }

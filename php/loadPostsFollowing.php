@@ -8,7 +8,6 @@ session_start();
 $user = intval($_SESSION['user_id']);
 $wow = array();
 
-// Get followers list
 $stmt = $conn->prepare('SELECT followed_id FROM follows WHERE following_id = ?');
 $stmt->bind_param('i', $user);
 if ($stmt->execute()) {
@@ -77,7 +76,6 @@ if ($stmt->execute()) {
                 $filters = stripslashes($row['filters']);
             }
 
-            // Iterate through each post and replace bad words
             foreach ($data as &$post) {
                 $badWords = json_decode($filters);
                 foreach ($badWords as $badWord) {

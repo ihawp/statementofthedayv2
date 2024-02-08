@@ -42,17 +42,13 @@ if ($stmt->execute()) {
     // notifications page
     for ($i = 0; $i < sizeof($data); $i++) {
         if ($data[$i]['viewed'] === 0) {
-            // Assuming $data[$i]['id'] is the id of the row
             $id = $data[$i]['id'];
-
-            // Update the 'viewed' column to 1 for the specific row
             $stmt = $conn->prepare('UPDATE notifications SET viewed = 1 WHERE id = ?');
             $stmt->bind_param('i', $id);
 
             if ($stmt->execute()) {
                 $stmt->close();
             } else {
-                // Handle the case where the update fails
                 echo json_encode($stmt->error);
                 $stmt->close();
                 exit();

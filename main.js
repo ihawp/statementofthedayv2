@@ -64,35 +64,33 @@ function app() {
                     'home': {
                         'content': `
             <section>
-                <h1>this is the home page, you are not logged in!</h1>
+                <h1>this is the home update page, you are not logged in!</h1>
             </section>
         `
                     },
                     'login': {
                         'content': `
+<section>
             <h1>login</h1>
             <form method="POST" action="php/login.php" id="loginForm">
                 <input type="text" placeholder="username" name="loginusername" id="loginusername" required>
                 <input type="password" placeholder="password" name="loginpassword" id="loginpassword" required>
                 <button type="submit" onclick="formSubmit(event, 'login')">login</button>
             </form>
+</section>
         `
                     },
                     'register': {
                         'content': `
-            <h1>register</h1>
+            <section>
+             <h1>register</h1>
             <form method="POST" action="php/register.php" id="registerForm">
                 <input type="text" placeholder="username" name="username" id="username" required>
                 <input type="password" placeholder="password" name="password" id="password" maxlength="25" required>
                 <button type="submit" onclick="formSubmit(event, 'register')">register</button>
-            </form>
+            </form>           
+</section>
         `
-                    },
-                    '404': {
-                        'content': `
-                            <h1>404 we do not know what you want from us</h1>
-                            <a onclick="printPage('home')">back to home!</a>
-                    `
                     }
                 }
             } else if (logged === true) {
@@ -120,15 +118,6 @@ function app() {
                                 <p>&copy; ihawp ${year}</p>
                             </footer>
                         `
-                    },
-                    '404': {
-                        'content': `
-<section>
-                            <h1>404 we do not know what you want from us</h1>
-                                                    <a onclick="printPage('home')">back to home!</a>
-</section>
-
-`
                     },
                     'home': {
                         'content': `
@@ -173,7 +162,7 @@ function app() {
     <input id="newPassword" type="password" placeholder="New Password" name="password" maxlength="25">
     <button type="submit">Submit</button>
 </form>
-<a id="logout" href="php/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+<a id="logout" href="php/logout.php" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
 </div>
 
 <div id="medalsContainer" class="nice-box">
@@ -297,7 +286,7 @@ function app() {
                     printPage(page);
                 }
             } else {
-                printPage('404');
+                printPage('home');
             }
         })
         .catch(error => {
@@ -317,6 +306,25 @@ function previewFile() {
         };
 
         reader.readAsDataURL(file);
+    }
+}
+function logout() {
+    logged = false;
+    usernamee = undefined;
+    userIDD = undefined;
+    pfpp = undefined;
+    postsOffset = 0;
+    profileOffset = 0;
+    postOffset = 0;
+    viewPostOffset = 0;
+    followersOffset = 0;
+    followingOffset = 0;
+    notificationsOffet = 0;
+    userFilters = new Array();
+    medals = new Array();
+    selectedMedal = undefined;
+    profileCount = 0;
+    pageInfo = {
     }
 }
 // form logic for pausing and checking info before submitting
@@ -364,9 +372,7 @@ function formSubmit(event, type) {
 
         switch (type) {
             case ('login'):
-                setTimeout(function() {
-                    loginFormSubmission.submit();
-                }, 2000);
+                loginFormSubmission.submit();
                 break;
             case ('register'):
                 registerFormSubmission.submit();
@@ -658,7 +664,9 @@ function loadNotificationsCount() {
                 ${response['count']}
             `;
                 }
-            }
+            } else {
+                 document.getElementById('notificationRedDot').style.display = 'none';
+             }
         })
         .catch(error=> {
            console.log(error);
@@ -721,9 +729,6 @@ function loadMedalsForSettings() {
         })
 }
 function printMedals(medalss) {
-    console.log(medalss);
-
-
     if (medalss.length === 0) {
         document.getElementById(`medalsContainer`).remove();
     } else {
@@ -1475,11 +1480,11 @@ function loadPostsForLeaderboardYearly() {
 
 // print content
 function printPage(page) {
-    changeURL(page);
-    document.title = `${page} | Statement Of The Day`;
     if (page !== 'notifications') {
         loadNotificationsCount();
     }
+    changeURL(page);
+    document.title = `${page} | Statement Of The Day`;
     document.body.innerHTML =
             pageInfo['header']['content']+
             pageInfo[page]['content']+
@@ -1500,7 +1505,8 @@ function printPage(page) {
         openViewFollowingOverlay();
     }
         if (page === 'home' || page ==='viewFollowingPosts') {
-            document.getElementById('printPostsSectionn').innerHTML += `
+            if (document.getElementById('printPostsSectionn')) {
+                document.getElementById('printPostsSectionn').innerHTML += `
                                         <section>
                                 <form id="makeAPostForm" method="POST">
 <textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="makeAPost"></textarea>
@@ -1516,16 +1522,22 @@ function printPage(page) {
                                     <a id="viewFollowingg" onclick="printPage('viewFollowingPosts')"><p>Following</p></a>
 </div>
             `;
+            }
 
-            let w = document.getElementById('homeButton');
-            w.style.backgroundColor = 'var(--two)';
-            w.style.color = 'var(--one)';
+            if (document.getElementById('homeButton')) {
+                let w = document.getElementById('homeButton');
+                w.style.backgroundColor = 'var(--two)';
+                w.style.color = 'var(--one)';
+            }
+
         }
         if (page === 'home') {
-            loadPostsForHome();
-            let w= document.getElementById('viewHome').style;
-            w.color = 'var(--one)';
-            w.backgroundColor = 'var(--two)';
+            if (document.getElementById('viewHome')) {
+                loadPostsForHome();
+                let w= document.getElementById('viewHome').style;
+                w.color = 'var(--one)';
+                w.backgroundColor = 'var(--two)';
+            }
         }
         if (page === 'viewFollowingPosts') {
             loadPostsForFollowing();
@@ -1569,6 +1581,12 @@ function printPage(page) {
         if (page === 'settings') {
             loadMedalsForSettings();
             printFiltersForSettings();
+
+            if (getParam('user_id')==userIDD) {
+                let w = document.getElementById('profileButton');
+                w.style.backgroundColor = 'var(--two)';
+                w.style.color = 'var(--one)';
+            }
         }
         if (page === 'notifications') {
             loadNotificationsButton();
@@ -1761,7 +1779,7 @@ function printPostContent(posts, idOfPrint) {
                 </div>
             `;
             let current = document.getElementById(`post_id_${p['post_id']}`);
-            if (i === 0 || i===1||i===2) {
+            if (i > 0) {
                 current.style.marginTop = '10px';
                 current.style.marginBottom = '10px';
             }
@@ -1769,6 +1787,7 @@ function printPostContent(posts, idOfPrint) {
                 current.style.boxShadow = '0 0 10px rgb(255,215,0)';
                 current.style.borderColor = 'rgb(255,215,0)';
                 current.style.marginTop = '20px';
+                current.style.marginBottom = '10px';
             }
             if (i === 1) {
                 current.style.boxShadow = '0 0 10px silver';
@@ -1777,9 +1796,6 @@ function printPostContent(posts, idOfPrint) {
             if (i === 2) {
                 current.style.boxShadow = '0 0 10px red';
                 current.style.borderColor = 'red';
-            }
-            if (i===3) {
-                current.style.marginTop = '10px';
             }
         }
 

@@ -14,7 +14,6 @@ if ($stmtMedal->execute()) {
 
         $wow =json_encode($medalInfo);
 
-        // Update selected_medal column in accounts table
         $stmtUpdate = $conn->prepare("UPDATE accounts SET medal_selection = ? WHERE id = ?");
         $stmtUpdate->bind_param('si', $wow, $accountId);
 
