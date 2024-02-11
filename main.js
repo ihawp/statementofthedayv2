@@ -44,14 +44,14 @@ function app() {
                    <div id="alert-container">
                         
                         </div>
+                        
                         <header>
-                            <nav>
-                            <a onclick="printPage('home')">home</a>                      
-                            <a onclick="printPage('login')">login</a>                      
-                            <a onclick="printPage('register')">register</a>                      
-                        </nav>
-                        </header>  
-                        <div id="fixedHeader"></div>
+                        <nav>
+                        <a id="trueHome" onclick="printPage('home')">home</a>                      
+                <a id="trueLogin" onclick="printPage('login')">login</a>                      
+                <a id="trueRegister" onclick="printPage('register')">register</a>
+</nav>
+</header>
                         `
                     },
                     'footer': {
@@ -63,14 +63,15 @@ function app() {
                     },
                     'home': {
                         'content': `
-            <section>
-                <h1>this is the home update page, you are not logged in!</h1>
-            </section>
+            <section id="trueHomeSection">
+                <i class="fa-solid fa-trophy"></i>
+                <h1>Welcome to Statement Of The Day!</h1>
+               </section>
         `
                     },
                     'login': {
                         'content': `
-<section>
+<section id="loginSection">
             <h1>login</h1>
             <form method="POST" action="php/login.php" id="loginForm">
                 <input type="text" placeholder="username" name="loginusername" id="loginusername" required>
@@ -82,7 +83,7 @@ function app() {
                     },
                     'register': {
                         'content': `
-            <section>
+            <section id="registerSection">
              <h1>register</h1>
             <form method="POST" action="php/register.php" id="registerForm">
                 <input type="text" placeholder="username" name="username" id="username" required>
@@ -1480,6 +1481,7 @@ function loadPostsForLeaderboardYearly() {
 
 // print content
 function printPage(page) {
+
     if (page !== 'notifications') {
         loadNotificationsCount();
     }
@@ -1538,6 +1540,18 @@ function printPage(page) {
                 w.color = 'var(--one)';
                 w.backgroundColor = 'var(--two)';
             }
+            if (document.getElementById('trueHomeSection')) {
+                document.getElementById('trueHome').style.backgroundColor = 'var(--two)';
+                document.getElementById('trueHome').style.color = 'var(--one)';
+            }
+        }
+        if (page === 'login' && document.getElementById('loginSection')) {
+            document.getElementById('trueLogin').style.backgroundColor = 'var(--two)';
+            document.getElementById('trueLogin').style.color = 'var(--one)';
+        }
+        if (page === 'register' && document.getElementById('registerSection')) {
+            document.getElementById('trueRegister').style.backgroundColor = 'var(--two)';
+            document.getElementById('trueRegister').style.color = 'var(--one)';
         }
         if (page === 'viewFollowingPosts') {
             loadPostsForFollowing();
