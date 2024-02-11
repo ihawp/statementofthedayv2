@@ -1,22 +1,20 @@
+
 <?php
 
 include 'db_conn.php';
 session_start();
 
-if (htmlspecialchars($_GET['content'])==='') {
-    echo json_encode(['stmt'=>false]);
-    exit();
-}
-if (htmlspecialchars($_GET['content'])[0] === ' ') {
-    echo json_encode(['stmt'=>false]);
-    exit();
-}
-$post = htmlspecialchars($_GET['content']);
+$post = htmlspecialchars($_POST['content']);
 $data = array();
 
+if ($post[0] === ' ') {
+    header('Location: ../index.html?page=home&error=accidentalclickk');
+    exit();
+}
+
 if (isset($_SESSION['username']) && isset($_SESSION['user_id'])) {
-    if ($post.ob_get_length() <= 0) {
-        header('Location: ../index.html?page=home&error=accidentalclick');
+    if (strlen($post) <= 0) {
+        header('Location: ../index.html?page=home&error=accidentalclickwow');
         exit();
     }
 
@@ -46,17 +44,17 @@ if (isset($_SESSION['username']) && isset($_SESSION['user_id'])) {
                     'super_parent_post_id'=>$row['super_parent_post_id']
                 ];
             }
-            echo json_encode($data);
+            header('Location: ../index.html?page=home&success=true');
             exit();
         } else {
-            echo json_encode(['stmt'=>false]);
+            header('Location: ../index.html?page=home&error=accidentalclickkkkk');
             exit();
         }
     } else {
-        echo json_encode(['stmt'=>false]);
+        header('Location: ../index.html?page=home&error=accidentalclickkk');
         exit();
     }
 } else {
-    echo json_encode(['stmt'=>false]);
+    header('Location: ../index.html?page=home&error=accidentalclickk');
     exit();
 }

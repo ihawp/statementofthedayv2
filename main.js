@@ -378,64 +378,6 @@ function formSubmit(event, type) {
             case ('register'):
                 registerFormSubmission.submit();
                 break;
-            case ('makeAPost'):
-                document.getElementById('makeAPostButton').disabled = true;
-
-                setTimeout(function() {
-                    document.getElementById('makeAPostButton').disabled = false;
-                    }, 5000);
-
-                let w = new FormData(makeAPostForm);
-                let wow = {
-                    'content': w.get('makeAPost')
-                }
-                ajaxGETData('php/addPost.php', wow)
-                    .then(response=> {
-                        let p = response;
-                        if (response['stmt'] === false) {
-                            createAlert('Post NOT Added.', 'yellow');
-
-                        } else {
-                            createAlert('Post Added Successfully!', 'green');
-                            document.getElementById('makeAPost').value = '';
-                            if (document.getElementById('printPostsSection')) {
-
-                                document.getElementById('printPostsSection').insertAdjacentHTML('afterbegin', `
-                                    
-            <div class="post newPost" id="post_id_${p['post_id']}" onclick="openViewPostInteract(${p['post_id']})">
-                            <div class="paddingg">
-                                                        <div class="flex-row align-bottom">
-                <img class="postImg" alt="${p['username']}-pfp" loading="lazy" src="userPFP/${p['pfp']}" draggable="false" onclick="openProfile(${p['user_id']}, event)">
-                <a class="profileLink" onclick="openProfile(${p['user_id']}, event)">@${p['username']}</a> 
-</div>
-                <h2>${p['content']}</h2>
-                </div>
-
-                <div class="flex-row post-buttons" id="post_id_add_delete_${p['post_id']}">
-                <a onclick="addALike(event, ${p['post_id']})"><i class="fa-solid fa-heart"></i></a>
-                <p id="${p['post_id']}_likes_count">${p['likes']}</p>         
-                <a><i class="fa-solid fa-comment"></i></a>
-                <p id="${p['post_id']}_comment_count">${p['comments']}</p>         
-                <a onclick="openDeleteMenu(event, ${p['post_id']}, ${p['user_id']})"><i class="fa-solid fa-trash"></i></a>
-
-</div>         
-  
-            
-                                `);
-
-                                setTimeout(function() {
-                                    document.getElementById(`post_id_${p['post_id']}`).classList.remove('newPost');
-                                }, 1000);
-                            }
-                        }
-
-                        // add to dom
-                    })
-                    .catch(error=>{
-                        createAlert('Post NOT Added.', 'red');
-                    });
-
-                break;
             case ('addComment'):
 
                 // will need to add some divs
@@ -1510,10 +1452,10 @@ function printPage(page) {
             if (document.getElementById('printPostsSectionn')) {
                 document.getElementById('printPostsSectionn').innerHTML += `
                                         <section>
-                                <form id="makeAPostForm" method="POST">
-<textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="makeAPost"></textarea>
+                                <form id="makeAPostForm" method="POST" action="php/addPost.php">
+<textarea maxlength="255" placeholder="Say Something!" id="makeAPost" name="content"></textarea>
 
-<button class="postButton" id="makeAPostButton" type="submit" onclick="formSubmit(event, 'makeAPost')"><i class="fa-solid fa-paper-plane"></i></button>
+<button class="postButton" id="makeAPostButton" type="submit"><i class="fa-solid fa-paper-plane"></i></button>
                                 </form>
                             </section>
                             <br>
