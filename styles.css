@@ -129,7 +129,6 @@ body {
     }
 
     #loginSection, #registerSection {
-        width: 100vw;
         height: 100vh;
         display: flex;
         align-items: center;
@@ -203,7 +202,7 @@ body {
         justify-content: center;
     }
     #fixedHeader {
-        height: 65px;
+        height: 70px;
     }
 
     nav {
@@ -212,7 +211,6 @@ body {
         justify-content: center;
         flex-direction: row;
         border-radius: 0;
-        box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
         box-sizing: border-box;
     }
     nav a {
@@ -220,6 +218,7 @@ body {
         margin: 0;
         font-size: 2em;
         padding: 18px 0;
+        height: 70px;
 
         position: relative;
 
@@ -274,7 +273,6 @@ body {
         box-shadow: 0 0 1.5px rgb(0,0,0,0.2);
 
         background-color: rgb(0,0,0,0.02);
-        margin-top: 4px;
     }
     .leaderboardNumber {
         width: 50px;
@@ -410,11 +408,9 @@ body {
     }
     #makeAPost, #commentContent {
         outline: none;
-        margin-top: 25px;
 
         box-sizing: border-box;
         background-color: var(--two);
-        border-radius: 4px;
         resize: none;
 
         width: 100vw;
@@ -610,7 +606,6 @@ body {
     #leaderboardButtons {
         border-radius: 6px;
         margin: 0;
-        margin-top: 25px;
 
 
         display: flex;
@@ -630,8 +625,6 @@ body {
         background-color: rgb(0,0,0,0.2);
 
         box-sizing: border-box;
-
-        margin-bottom: 4px;
 
         border-radius: 6px;
 
@@ -658,9 +651,6 @@ body {
     .noti-first-time {
         background-color: var(--one);
         border: solid 1px rgb(0,0,0,0.2);
-    }
-    #notificationsSection {
-        margin-top: 25px;
     }
     #leaderboardButtons a {
         height: 50px;
@@ -706,9 +696,8 @@ body {
         box-sizing: border-box;
 
         border-radius: 0;
-        margin-bottom: 2.5px;
-
-        margin-top: -23px;
+        margin-top: -34px;
+        margin-bottom: -3px;
     }
     #home-post-buttons a {
         width: 50%;
@@ -1163,7 +1152,7 @@ body {
         height: 90px;
     }
     #fixedHeader {
-        height: 85px;
+        height: 90px;
     }
     #settingsSection {
         width: 600px;
@@ -1204,6 +1193,38 @@ body {
     #home-post-buttons a:last-child {
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
+    }
+
+    #loginForm input, #registerForm input {
+        width: 30vw;
+    }
+    #loginForm button, #registerForm button {
+        width: 20vw;
+    }
+    .post {
+        margin-top: 4px;
+    }
+
+    #makeAPost, #commentContent {
+        margin-top: 25px;
+        border-radius: 4px;
+    }
+    nav {
+        box-shadow: 1px 0px 11px rgb(0,0,0,0.43);
+    }
+    #leaderboardButtons {
+        margin-top: 25px;
+    }
+    #home-post-buttons {
+        margin-bottom: 2.5px;
+
+        margin-top: -23px;
+    }
+    #notificationsSection {
+        margin-top: 25px;
+    }
+    .notification{
+        margin-bottom: 4px;
     }
 }
 
