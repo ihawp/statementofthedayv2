@@ -624,11 +624,9 @@ function deleteFilter(filter) {
             if (response['wow']) {
                 document.getElementById(filter).remove();
                 let indexToRemove = userFilters.indexOf(filter);
-
                 if (indexToRemove !== -1) {
                     userFilters = userFilters.slice(0, filter).concat(userFilters.slice(indexToRemove + 1));
                 }
-
                 createAlert('Filter Deleted', 'red');
             }
         })
@@ -889,6 +887,17 @@ function openProfile(userID, event) {
     if (event) {
         event.stopPropagation();
     }
+
+    addToURL('user_id', userID);
+    printPage('profile');
+    document.getElementById('loadMoreButtonDiv').innerHTML += `
+                                <a onclick="loadPostsForProfile(${userID})"><i class="fa-solid fa-circle-chevron-down"></i></a>
+    `;
+}
+function openProfileFslashF(userID, event) {
+    if (event) {
+        event.stopPropagation();
+    }
     if (getParam('viewing_following')) {
         closeViewFollowingOverlay();
     }
@@ -952,7 +961,7 @@ function printFollowers(followers) {
 
 
             w.innerHTML += `
-            <div id="follower-${i}" onclick="openProfile(${followers[i]['id']}, event)" class='nice-box view-followers'>
+            <div id="follower-${i}" onclick="openProfileFslashF(${followers[i]['id']}, event)" class='nice-box view-followers'>
                 <img loading="lazy" src="userPFP/${followers[i]['pfp']}">
                 <p>${followers[i]['username']}</p>
                 <button id="followers-button-${i}" onclick="addFollowEvent(event, ${userIDD}, ${followers[i]['id']}, 'followers-button-${i}')"></button>
@@ -1036,7 +1045,7 @@ function printFollowing(followers) {
 
 
         w.innerHTML += `
-            <div id="following-${i}" onclick="openProfile(${followers[i]['id']}, event)" class='nice-box view-followers'>
+            <div id="following-${i}" onclick="openProfileFslashF(${followers[i]['id']}, event)" class='nice-box view-followers'>
                 <img loading="lazy" src="userPFP/${followers[i]['pfp']}">
                 <p>${followers[i]['username']}</p>
                 <button id="following-button-${i}" onclick="addFollowEvent(event, ${userIDD}, ${followers[i]['id']}, 'following-button-${i}')"></button>

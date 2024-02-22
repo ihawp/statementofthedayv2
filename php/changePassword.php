@@ -1,16 +1,20 @@
 <?php
 
+include 'functions.php';
 
-$password = htmlspecialchars($_POST['password']);
-$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-include 'db_conn.php';
-session_start();
-
-$userID = intval($_SESSION['user_id']);
-
-$stmt = $conn->prepare('UPDATE accounts SET password = ? WHERE id = ?');
-$stmt->bind_param('si',$hashedPassword, $userID);
-if ($stmt->execute()) {
-    header('Location: ../index.html?page=settings');
+if (checkLogged() && checkRequest('POST')) {
+    $password = htmlspecialchars($_POST['password']);
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    $userID = intval($_SESSION['user_id']);
+    $w = STMT($conn, 'UPDATE accounts SET password = ? WHERE id = ?', ['s', 'i'], [$hashedPassword, $userID]);
+    if ($w['result']) {
+        header('Location: ../index.html?page=settings');
+    } else {
+        header('Location: ../index.html?page=settings&failed=true');
+    }
+} else {
+    sendHome();
 }
+
+$conn->close();
+exit();

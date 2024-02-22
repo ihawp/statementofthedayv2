@@ -1,29 +1,29 @@
 <?php
 
-// load * from medals table
-// load based on the $_SESSION['user_id']
+include 'functions.php';
 
-// send back all info for each medal
-
-include 'db_conn.php';
-session_start();
-
-$userID = intval($_SESSION['user_id']);
-
-$wow = Array();
-
-$stmt = $conn->prepare('SELECT * FROM medals WHERE user_id = ?');
-$stmt->bind_param('i', $userID);
-if ($stmt->execute()) {
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-        $wow[] = [
-            'id'=>$row['id'],
-            'post_id'=>$row['post_id'],
-            'user_id'=>$row['user_id'],
-            'placement'=>$row['placement'],
-            'timestamp'=>$row['timestamp']
-        ];
+if (checkLogged() && checkRequest('GET')) {
+    $userID = intval($_SESSION['user_id']);
+    $wow = Array();
+    $w = STMT($conn, 'SELECT * FROM medals WHERE user_id = ?', ['i'], [$userID]);
+    if (isset($w['result'][0])) {
+        $i = 0;
+        foreach ($w['result'] as $key) {
+            $row = $w['result'][$i];
+            $wow[] = [
+                'id'=>$row[0],
+                'post_id'=>$row[1],
+                'user_id'=>$row[2],
+                'placement'=>$row[3],
+                'timestamp'=>$row[5]
+            ];
+            $i++;
+        }
     }
+    echo json_encode($wow);
+} else {
+    sendHome();
 }
-echo json_encode($wow);
+
+$conn->close();
+exit();

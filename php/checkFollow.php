@@ -1,24 +1,18 @@
 <?php
 
-include 'db_conn.php';
-session_start();
+include 'functions.php';
 
-$followedID = $_GET['followed_id'];
-$followerID = $_GET['follower_id'];
-
-$stmt = $conn->prepare('SELECT * FROM follows WHERE followed_id = ? AND following_id = ?');
-$stmt->bind_param('ii',$followedID, $followerID);
-if ($stmt->execute()) {
-    $stmt->store_result();
-    $r = $stmt->num_rows;
-    $stmt->close();
-    if ($r !== 0) {
-        echo json_encode(['following'=>true]);
-        exit();
+if (checkLogged() && checkRequest('GET')) {
+    $followedID = htmlspecialchars($_GET['followed_id']);
+    $followerID = htmlspecialchars($_GET['follower_id']);
+    $w = STMT($conn, 'SELECT * FROM follows WHERE followed_id = ? AND following_id = ?', ['i', 'i'], [$followedID, $followerID]);
+    if (isset($w['result'][0][0])) {
+        echo json_encode(['following' => true]);
     } else {
         echo json_encode(['following'=>false]);
-        exit();
     }
+} else {
+    sendHome();
 }
 
 $conn->close();

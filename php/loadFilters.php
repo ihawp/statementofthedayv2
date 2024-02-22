@@ -1,17 +1,17 @@
 <?php
 
 
-include 'db_conn.php';
-session_start();
+include 'functions.php';
 
-$userID = intval($_SESSION['user_id']);
-
-$stmt = $conn->prepare('SELECT filters FROM accounts WHERE id = ?');
-$stmt->bind_param('i', $userID);
-if ($stmt->execute()) {
-    $result = $stmt->get_result();
-    while ($row = $result->fetch_assoc()) {
-        echo json_encode(json_decode($row['filters']));
-        exit();
+if (checkLogged() && checkRequest('GET')) {
+    $userID = intval($_SESSION['user_id']);
+    $w = STMT($conn, 'SELECT filters FROM accounts WHERE id = ?', ['i'], [$userID]);
+    if (isset($w['result'][0][0])) {
+        echo json_encode(json_decode($w['result'][0][0]));
     }
+} else {
+    sendHome();
 }
+
+$conn->close();
+exit();

@@ -3,10 +3,6 @@
 include 'db_conn.php';
 session_start();
 
-
-// attempt implementing of blocking
-
-
 $offset = htmlspecialchars($_GET['offset']);
 $limit = htmlspecialchars($_GET['limit']);
 
