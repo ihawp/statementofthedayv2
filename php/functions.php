@@ -3,7 +3,6 @@
 include 'db_conn.php';
 session_start();
 
-
 // only for single value search
 function stmtGET($conn, $STATEMENT, $PARAM, $VARIABLE) {
     $stmt = $conn->prepare($STATEMENT);

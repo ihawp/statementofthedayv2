@@ -1,7 +1,7 @@
 <?php
 
 include 'functions.php';
-
+session_regenerate_id(true);
 
 if (checkRequest('GET')) {
     if (checkLogged()) {
