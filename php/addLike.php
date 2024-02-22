@@ -1,99 +1,53 @@
 <?php
 
-include 'db_conn.php';
-session_start();
+include 'functions.php';
 
 $postID = htmlspecialchars($_GET['post_id']);
 $userID = $_SESSION['user_id'];
 $likeSTR = 'like';
 
-$stmtCheckLiked = $conn->prepare('SELECT 1 FROM likes WHERE post_id = ? AND user_id = ? LIMIT 1');
-$stmtCheckLiked->bind_param('ii', $postID, $userID);
-
-if ($stmtCheckLiked->execute()) {
-    if ($stmtCheckLiked->fetch()) {
-        $stmtCheckLiked->close();
-
-        $stmtRemoveLike = $conn->prepare('DELETE FROM likes WHERE post_id = ? AND user_id = ?');
-        $stmtRemoveLike->bind_param('ii', $postID, $userID);
-
-        if ($stmtRemoveLike->execute()) {
-            $stmtDecrementLikeCount = $conn->prepare('UPDATE posts SET likes = likes - 1 WHERE post_id = ?');
-            $stmtDecrementLikeCount->bind_param('i', $postID);
-            $stmtDecrementLikeCount->execute();
-
-            $stmtDecrementLikeCount->close();
-
-            $stmt = $conn->prepare('SELECT user_id FROM posts WHERE post_id = ?');
-            $stmt->bind_param('i', $postID);
-            if ($stmt->execute()) {
-                $result = $stmt->get_result();
-                while ($row = $result->fetch_assoc()) {
-                    $userID2 = $row['user_id'];
-                }
-                $stmt->close();
-                if (intval($_SESSION['user_id']!==$userID2)) {
-                    $stmt = $conn->prepare('DELETE FROM notifications WHERE username = ? AND post_id = ? AND noti_type = ?');
-                    $stmt->bind_param('sis',$_SESSION['username'], $postID, $likeSTR);
-                    if ($stmt->execute()) {
-                        echo json_encode(['removed_like' => true]);
-                        exit();
-                    }
+if (checkLogged() && checkRequest('GET')) {
+    $w = STMT($conn, 'SELECT * FROM likes WHERE post_id = ? AND user_id = ? LIMIT 1', ['i', 'i'], [$postID, $userID]);
+    if (isset($w['result'][0][0])) {
+        $w = STMT($conn, 'DELETE FROM likes WHERE post_id = ? AND user_id = ?', ['i', 'i'], [$postID, $userID]);
+        if ($w['result']) {
+            STMT($conn, 'UPDATE posts SET likes = likes - 1 WHERE post_id = ?', ['i'], [$postID]);
+            $c = STMT($conn, 'SELECT user_id FROM posts WHERE post_id = ?', ['i'], [$postID]);
+            $userID2 = $c['result'][0][0];
+            if (intval($_SESSION['user_id'] !== $userID2)) {
+                $w = STMT($conn, 'DELETE FROM notifications WHERE username = ? AND post_id = ? AND noti_type = ?', ['s', 'i', 's'], [$_SESSION['username'], $postID, $likeSTR]);
+                if ($w['result']) {
+                    echo json_encode(['removed_like' => true]);
                 }
             } else {
-                echo json_encode(['stmt'=>false]);
-                exit();
+                echo json_encode(['removed_like' => true]);
             }
         } else {
             echo json_encode(['stmt' => false]);
-            exit();
         }
-
-        $stmtRemoveLike->close();
-        echo json_encode(['removed_like' => true]);
-
-        exit();
-    }
-} else {
-    $stmtCheckLiked->close();
-}
-
-$stmtInsertLike = $conn->prepare('INSERT INTO likes (user_id, post_id, timestamp) VALUES (?, ?, NOW(6))');
-$stmtInsertLike->bind_param('ii', $userID, $postID);
-
-if ($stmtInsertLike->execute()) {
-    $stmtIncrementLikeCount = $conn->prepare('UPDATE posts SET likes = likes + 1 WHERE post_id = ?');
-    $stmtIncrementLikeCount->bind_param('i', $postID);
-    $stmtIncrementLikeCount->execute();
-
-    $stmtIncrementLikeCount->close();
-
-    $stmt = $conn->prepare('SELECT user_id FROM posts WHERE post_id = ?');
-    $stmt->bind_param('i',$postID);
-    if ($stmt->execute()) {
-        $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-            $userID2 = $row['user_id'];
-        }
-        $stmt->close();
-        if (intval($_SESSION['user_id']!==$userID2)) {
-            $stmt = $conn->prepare('INSERT INTO notifications (username, user_id, post_id, noti_type, timestamp) VALUES (?, ?, ?,?, NOW(6))');
-            $likeSTR = 'like';
-            $stmt->bind_param('siis',$_SESSION['username'], $userID2, $postID, $likeSTR);
-            if ($stmt->execute()) {
-                $stmt->close();
-                echo json_encode(['like_added' => true]);
+    } else {
+        $w = STMT($conn, 'INSERT INTO likes (user_id, post_id, timestamp) VALUES (?, ?, NOW(6))', ['i', 'i'], [$userID, $postID]);
+        if ($w['result']) {
+            STMT($conn, 'UPDATE posts SET likes = likes + 1 WHERE post_id = ?', ['i'], [$postID]);
+            $w = STMT($conn, 'SELECT user_id FROM posts WHERE post_id = ?', ['i'], [$postID]);
+            if (isset($w['result'][0][0])) {
+                $userID2 = $w['result'][0][0];
+                if (intval($_SESSION['user_id'] !== $userID2)) {
+                    $w = STMT($conn, 'INSERT INTO notifications (username, user_id, post_id, noti_type, timestamp) VALUES (?, ?, ?,?, NOW(6))', ['s', 'i', 'i', 's'], [$_SESSION['username'], $userID2, $postID, $likeSTR]);
+                    if ($w['result']) {
+                        echo json_encode(['like_added' => true]);
+                    }
+                } else {
+                    echo json_encode(['like_added' => true]);
+                }
             }
         } else {
-            echo json_encode(['like_added' => true]);
+            echo json_encode(['stmt' => false]);
         }
     }
 } else {
-    echo json_encode(['stmt' => false]);
+    sendHome();
 }
-
-$stmtCheckLiked->close();
-$stmtInsertLike->close();
 
 $conn->close();
 exit();

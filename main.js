@@ -1248,6 +1248,7 @@ function addALike(event, postID) {
     }
     useAJAXGetData('php/addLike.php', wow)
         .then(response => {
+
                 if (response['removed_like']) {
                     createAlert('Like Removed', 'red');
 

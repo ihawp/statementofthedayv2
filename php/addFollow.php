@@ -1,105 +1,59 @@
 <?php
 
-include 'db_conn.php';
-session_start();
-
+include 'functions.php';
 
 $userID = intval(htmlspecialchars($_SESSION['user_id']));
 $uploadUserID = intval(htmlspecialchars($_GET['following']));
-$toBeFollowedID = intval(htmlspecialchars($_GET['followed']));
-$postID = $toBeFollowedID;
-$typeParam = 'follow';
 
-// check if they already follow the user
-// if so remove the follow
-
-// if they dont already follow them add the follow
-// to the db!
-
-if ($uploadUserID == intval($_SESSION['user_id'])) {
-    $stmt = $conn->prepare('SELECT * FROM follows WHERE followed_id = ? AND following_id = ?');
-    $stmt->bind_param('ii',$toBeFollowedID, $uploadUserID);
-    if ($stmt->execute()) {
-        $stmt->store_result();
-        $rowCount = $stmt->num_rows;
-        $stmt->close();
-        if ($rowCount === 0) {
-            $stmt = $conn->prepare('INSERT INTO follows (followed_id, following_id, timestamp) VALUES (?, ?, NOW(6))');
-            $stmt->bind_param('ii', $toBeFollowedID, $uploadUserID);
-            if ($stmt->execute()) {
-                $following_count_stmt = $conn->prepare('UPDATE accounts SET following_count = following_count + 1 WHERE id = ?');
-                $following_count_stmt->bind_param('i', $uploadUserID);
-
-                $follow_count_stmt = $conn->prepare('UPDATE accounts SET follow_count = follow_count + 1 WHERE id = ?');
-                $follow_count_stmt->bind_param('i', $toBeFollowedID);
-
-                if ($following_count_stmt->execute() && $follow_count_stmt->execute()) {
-
-                    $follow_count_stmt->close();
-                    $following_count_stmt->close();
-
-                    // will need to person following username
-
-                    $stmt = $conn->prepare('SELECT username FROM accounts WHERE id = ? LIMIT 1');
-                    $stmt->bind_param('i', $userID);
-                    if ($stmt->execute()) {
-                        $result = $stmt->get_result();
-                        $row = $result->fetch_assoc();
-                        $followingUsername = $row['username'];
-                    }
-                    $stmt->close();
-
-                    $stmt = $conn->prepare('INSERT INTO notifications (username, user_id, post_id, noti_type, timestamp) VALUES (?, ?, ?,?, NOW(6))');
-                    $stmt->bind_param('siis',$followingUsername, $toBeFollowedID, $userID, $typeParam);
-                    if ($stmt->execute()) {
-                        $stmt->close();
+if ($uploadUserID === intval($_SESSION['user_id']) && checkLogged() && checkRequest('GET')) {
+    $toBeFollowedID = intval(htmlspecialchars($_GET['followed']));
+    $postID = $toBeFollowedID;
+    $typeParam = 'follow';
+    $w = STMT($conn, 'SELECT * FROM follows WHERE followed_id = ? AND following_id = ?', ['i', 'i'], [$toBeFollowedID, $uploadUserID]);
+    if ($w['result'] === true) {
+            $w = STMT($conn, 'INSERT INTO follows (followed_id, following_id, timestamp) VALUES (?, ?, NOW(6))', ['i', 'i'], [$toBeFollowedID, $uploadUserID]);
+            if ($w['result']) {
+                STMT($conn, 'UPDATE accounts SET following_count = following_count + 1 WHERE id = ?', ['i'], [$uploadUserID]);
+                STMT($conn, 'UPDATE accounts SET follow_count = follow_count + 1 WHERE id = ?', ['i'], [$uploadUserID]);
+                $w = STMT($conn, 'SELECT username FROM accounts WHERE id = ? LIMIT 1', ['i'], [$userID]);
+                if ($w['result'][0][0]) {
+                    $followingUsername = strval($w['result'][0][0]);
+                    $w = STMT($conn, 'INSERT INTO notifications (username, user_id, post_id, noti_type, timestamp) VALUES (?, ?, ?,?, NOW(6))', ['s', 'i', 'i', 's'], [$followingUsername, $toBeFollowedID, $userID, $typeParam]);
+                    if ($w['result']) {
                         echo json_encode(['following' => true]);
-                        exit();
+                    } else {
+                        echo json_encode(['following' => false]);
                     }
-                    // and user_id of user being followed
-                    // along with timestamp
-
                 } else {
                     echo json_encode(['following' => false]);
-                    exit();
                 }
             }
-        } else {
-            $stmt = $conn->prepare('DELETE FROM follows WHERE followed_id = ? AND following_id = ?');
-            $stmt->bind_param('ii', $toBeFollowedID, $uploadUserID);
-            if ($stmt->execute()) {
+    } else {
+        $w = STMT($conn, 'DELETE FROM follows WHERE followed_id = ? AND following_id = ?', ['i', 'i'], [$toBeFollowedID, $uploadUserID]);
+        if ($w['result']) {
+            STMT($conn, 'UPDATE accounts SET following_count = following_count - 1 WHERE id = ?', ['i'], [$uploadUserID]);
+            STMT($conn, 'UPDATE accounts SET follow_count = follow_count - 1 WHERE id = ?', ['i'], [$toBeFollowedID]);
+            $w = STMT($conn, 'SELECT username FROM accounts WHERE id = ? LIMIT 1', ['i'], [$userID]);
+            if ($w['result'][0][0]) {
+                $followingUsername = strval($w['result'][0][0]);
 
-                $following_count_stmt = $conn->prepare('UPDATE accounts SET following_count = following_count - 1 WHERE id = ?');
-                $following_count_stmt->bind_param('i', $uploadUserID);
+                $stmt = $conn->prepare('DELETE FROM notifications WHERE user_id = ? AND noti_type = ? AND username = ?');
+                $stmt->bind_param('iss', $toBeFollowedID, $typeParam, $followingUsername);
 
-                $follow_count_stmt = $conn->prepare('UPDATE accounts SET follow_count = follow_count - 1 WHERE id = ?');
-                $follow_count_stmt->bind_param('i', $toBeFollowedID);
+                $w = STMT($conn, 'DELETE FROM notifications WHERE user_id = ? AND noti_type = ? AND username = ?', ['i', 's', 's'], [$toBeFollowedID, $typeParam, $followingUsername]);
 
-                if ($following_count_stmt->execute() && $follow_count_stmt->execute()) {
-
-
-                    // get username
-                    $stmt = $conn->prepare('SELECT username FROM accounts WHERE id = ? LIMIT 1');
-                    $stmt->bind_param('i', $userID);
-                    if ($stmt->execute()) {
-                        $result = $stmt->get_result();
-                        $row = $result->fetch_assoc();
-                        $followingUsername = $row['username'];
-                    }
-                    $stmt->close();
-
-                    $stmt = $conn->prepare('DELETE FROM notifications WHERE user_id = ? AND noti_type = ? AND username = ?');
-                    $stmt->bind_param('iss',$toBeFollowedID, $typeParam, $followingUsername);
-                    if ($stmt->execute()) {
-                        echo json_encode(['unfollowed' => true]);
-                    }
+                if ($w['result'] === true) {
+                    echo json_encode(['unfollowed' => true]);
                 } else {
                     echo json_encode(['unfollowed' => false]);
                 }
+            } else {
+                echo json_encode(['unfollowed' => false]);
             }
         }
     }
+} else {
+    sendHome();
 }
-
 $conn->close();
 exit();
