@@ -33,7 +33,7 @@ function STMT($conn, $stmt, array $a_param_type, array $a_bind_params): array {
 
     $a_params[] = &$param_type;
     for($i = 0; $i < $n; $i++) {
-        $a_params[] = & $a_bind_params[$i];
+        $a_params[] = &$a_bind_params[$i];
     }
 
     $stmt = $conn->prepare($stmt);
