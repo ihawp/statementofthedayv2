@@ -2,15 +2,17 @@
 
 include 'functions.php';
 
-$commentContent = htmlspecialchars($_POST['commentContent']);
-if ($commentContent.ob_get_length() <= 0) {
-    header("Location: ../index.html?page=home&viewing_post=true&post_id=$parentID&error=accidentalclick");
+$parentID = filter_var($_POST['post_id'], FILTER_SANITIZE_NUMBER_INT);
+
+$commentContent = htmlspecialchars(trim($_POST['commentContent']));
+
+if (strlen($commentContent) <= 0) {
+    header("Location: ../index.html?page=home&viewing_post=true&post_id={$parentID}&error=accidentalclick", true, 302);
     $conn->close();
     exit();
 }
 
 if (checkLogged() && checkRequest('POST')) {
-    $parentID = htmlspecialchars($_POST['post_id']);
     $usernamee = htmlspecialchars($_SESSION['username']);
     $userID = htmlspecialchars($_SESSION['user_id']);
     $type = 'comment';
