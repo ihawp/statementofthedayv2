@@ -6,12 +6,15 @@ if (checkLogged() && checkRequest('GET')) {
     $offset = htmlspecialchars($_GET['offset']);
     $limit = htmlspecialchars($_GET['limit']);
     $data = array();
-    $w = STMT($conn, 'SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp, a.medal_selection
-                       FROM posts p
-                       LEFT JOIN accounts a ON p.user_id = a.id
-                       WHERE p.parent_post_id = 0 
-                       ORDER BY p.time_posted DESC 
-                       LIMIT ? OFFSET ?', ['i','i'], [$limit, $offset]);
+    $w = STMT($conn, 'SELECT p.post_id, p.super_parent_post_id, p.user_id, p.content, p.username, p.likes, p.comments, a.pfp, a.medal_selection FROM posts p
+                            LEFT JOIN accounts a ON p.user_id = a.id WHERE p.parent_post_id = 0 AND p.user_id NOT IN 
+                            (
+                            SELECT blocked_id
+                            FROM blocked
+                            WHERE blocker_id = ?
+                            )
+                            ORDER BY p.time_posted DESC LIMIT ? OFFSET ?',
+                ['i','i','i'], [$_SESSION['user_id'], $limit, $offset]);
     if (isset($w['result'][0])) {
         foreach ($w['result'] as $row) {
             $medalSelection = json_decode($row[8]);

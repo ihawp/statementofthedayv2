@@ -216,7 +216,7 @@ body {
     nav a {
         box-sizing: border-box;
         margin: 0;
-        font-size: 2em;
+        font-size: 1.7em;
         padding: 18px 0;
         height: 70px;
 
@@ -1111,6 +1111,104 @@ body {
     #filtersForm h1 {
         width: 100%;
     }
+
+    #searchFormContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100vw;
+        height: 70px;
+    }
+    #searchForm {
+        width: 80%;
+        height: 70px;
+    }
+    #search {
+        border: solid 2px white;
+        padding: 0 15px;
+        margin: 0 0 0 0;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+
+        font-size: 1.6em;
+        border-radius: 0;
+    }
+    #closeSearchButton {
+        padding: 0 0 0 0;
+        margin: 0 0 0 0;
+        border-radius: 0;
+        box-sizing: border-box;
+        height: 100%;
+        width: 20%;
+        font-size: 2em;
+    }
+    #closeSearchButton:hover {
+        background-color: red;
+    }
+
+    #belowSearchFormContainer {
+        position: fixed;
+        left: 0;
+        top: 0;
+
+        width: 100vw;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+
+        min-height: 100vh;
+        max-height: 100vh;
+        background-color: var(--one);
+        box-sizing: border-box;
+    }
+    .spacer {
+        height: 15px;
+        width: 10px;
+    }
+    .searchResultImage {
+        width: 75px;
+        height: 75px;
+        border-radius: 150px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    #actualResultPrint {
+        box-sizing: border-box;
+        margin-top: 90px;
+        height: max-content;
+        display: flex;
+        flex-direction: column;
+
+        width: 100vw;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+    .searchResult {
+        display: flex;
+        flex-direction: row;
+
+        box-sizing: border-box;
+
+        align-items: center;
+        justify-content: start;
+
+        width: 100vw;
+        height: 90px;
+        padding: 10px;
+        cursor: pointer;
+    }
+    .searchResult:hover {
+        background-color: rgb(0,0,0,0.1);
+    }
+    .searchResult h1 {
+        font-weight: 600;
+        font-size: 1.4em;
+        margin-left: 25px;
+    }
 }
 
 @media screen and (min-width: 777px) {
@@ -1121,12 +1219,35 @@ body {
         width: 600px;
     }
 
+    #searchFormContainer {
+        width: 700px;
+    }
+    #search {
+        border-top-right-radius: 16px;
+        border-bottom-right-radius: 16px;
+    }
+    #closeSearchButton {
+        border-top-left-radius: 16px;
+        border-bottom-left-radius: 16px;
+    }
+    .searchResult {
+        width: 100%;
+        border-radius: 6px;
+        margin: 5px;
+    }
+    #actualResultPrint {
+        width: 600px;
+    }
+    #belowSearchFormContainer {
+        min-height: 0;
+    }
+
     nav {
         border-radius: 16px;
         width: min-content;
     }
     nav a {
-        width: 210px;
+        width: 140px;
     }
 
     #profileHeader {
@@ -1139,8 +1260,12 @@ body {
     #home-post-buttons {
         width: 600px;
     }
-    #viewPostSectionInner, #viewFollowersInner, #viewFollowingInner {
-        width: min-content;
+    #viewPostSectionInner {
+        width:min-content;
+    }
+
+    #viewFollowersInner, #viewFollowingInner {
+        width: 600px;
     }
     .notification {
         width: 600px;

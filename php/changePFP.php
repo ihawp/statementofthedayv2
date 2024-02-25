@@ -25,6 +25,48 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
         if (in_array($imageFileType, ["png", "jpg", "jpeg"])) {
+            $imageSize = getimagesize($_FILES["file"]["tmp_name"]);
+            $imageWidth = $imageSize[0];
+            $imageHeight = $imageSize[1];
+
+            $maxWidth = 50;
+            $maxHeight = 50;
+
+            if ($imageWidth > $maxWidth || $imageHeight > $maxHeight) {
+                $newWidth = ($imageWidth > $maxWidth) ? $maxWidth : $imageWidth;
+                $newHeight = ($imageHeight > $maxHeight) ? $maxHeight : $imageHeight;
+
+                switch ($imageFileType) {
+                    case "jpg":
+                    case "jpeg":
+                        $imageResource = imagecreatefromjpeg($_FILES["file"]["tmp_name"]);
+                        break;
+                    case "png":
+                        $imageResource = imagecreatefrompng($_FILES["file"]["tmp_name"]);
+                        break;
+                    default:
+                        header('Location: ../index.html?page=settings');
+                        exit();
+                }
+
+                $newImageResource = imagecreatetruecolor($newWidth, $newHeight);
+                imagecopyresampled($newImageResource, $imageResource, 0, 0, 0, 0, $newWidth, $newHeight, $imageWidth, $imageHeight);
+
+                switch ($imageFileType) {
+                    case "jpg":
+                    case "jpeg":
+                        imagejpeg($newImageResource, $targetFilePath);
+                        break;
+                    case "png":
+                        imagepng($newImageResource, $targetFilePath);
+                        break;
+                }
+
+                imagedestroy($imageResource);
+                imagedestroy($newImageResource);
+            } else {
+                move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath);
+            }
             if (move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
                 $newImageName = $newFileName;
 

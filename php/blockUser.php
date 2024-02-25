@@ -15,7 +15,13 @@ if (checkLogged() && checkRequest('GET')) {
     } else {
         $w = STMT($conn, 'INSERT INTO blocked (blocker_id, blocked_id, timestamp) VALUES (?,?,NOW(6))', ['i', 'i'] , [$blockerID, $blockedID]);
         if ($w['result']){
-            echo json_encode(['stmt' => 'blocked']);
+            $w = STMT($conn, 'SELECT * FROM follows WHERE followed_id = ? AND following_id = ?', ['i', 'i'], [$blockedID, $blockerID]);
+            $wow = '';
+            if (isset($w['result'][0][0])) {
+                removeFollow($conn, $blockedID, $blockerID, $blockerID, 'follow');
+                $wow = true;
+            }
+            echo json_encode(['stmt' => 'blocked', 'wow'=>$wow]);
         } else {
             echo json_encode(['stmt' => 'unblocked']);
         }
